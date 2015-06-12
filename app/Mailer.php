@@ -44,6 +44,6 @@ class Mailer {
             $from = sprintf("From: %s<%s>", trim($this->fromName), trim($this->fromEmail));
             array_push($headers, $from);
         }
-        return mail($this->to, $this->subject, $this->message, implode('\r\n', $headers));
+        return mail($this->to, $this->subject, $this->message, implode('\r\n', $headers).'\r\n');
     }
 }
