@@ -52,6 +52,20 @@ Route::get('test-mailer', function() {
     return $mail->send() ? 'Success' : 'Failure';
 });
 
+Route::get('test', function() {
+    //require_once 'init.php';
+    $to = 'jameskmw48@gmail.com';
+    $subject = 'Hi There';
+    $body = '<html><body>Hello World</body></html>';
+
+    $from = 'testing@gmail.com';
+    $headersfrom = '';
+    $headersfrom .= 'MIME-Version: 1.0' . "\r\n";
+    $headersfrom .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+    $headersfrom .= 'From: ' . $from . ' ' . "\r\n";
+    return mail($to, $subject, $body, $headersfrom)? 'Succes': 'Failure';
+});
+
 
 
 
