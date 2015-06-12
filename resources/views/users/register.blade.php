@@ -9,7 +9,7 @@ Register New Admin
 @stop
 
 @section('inner-content')
-<form method="post" action="{{ action('Auth\AuthController@postRegister') }}">
+<form method="post" action="{{ action('UserController@postRegister') }}">
     {!! Form::token() !!}
     <div class="row">
         <div class="col-sm-6">

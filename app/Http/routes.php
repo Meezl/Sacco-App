@@ -24,17 +24,13 @@ Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function() {
 
     Route::get('/', 'DashBoardController@getIndex');
 
-    Route::controller('user', 'Auth\AuthController');
+    Route::controller('user', 'UserController');
     
     Route::controller('contacts', 'ContactController');
 });
 
 
-Route::get('auth/login', 'Auth\AuthController@getLogin');
-
-Route::post('auth/login', 'Auth\AuthController@postLogin');
-
-Route::get('auth/logout', 'Auth\AuthController@getLogout');
+Route::controller('auth/login', 'Auth\AuthController');
 
 Route::get('/users', function() {
     return view('users');

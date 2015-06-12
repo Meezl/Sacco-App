@@ -47,8 +47,8 @@
                     <span>User management</span>
                 </a>
                 <ul class="sub">
-                    <li><a href="">All Users</a></li>
-                    <li><a href="{{ action('Auth\AuthController@getRegister') }}">Add User</a></li>
+                    <li><a href="{{ action('UserController@getIndex') }}">All Users</a></li>
+                    <li><a href="{{ action('UserController@getRegister') }}">Add User</a></li>
                 </ul>
             </li>
             <li class="sub-menu">
