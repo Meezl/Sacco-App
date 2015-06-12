@@ -46,7 +46,7 @@ Route::get('test-swift', function() {
 Route::get('test-mailer', function() {
     $mail = new App\Mailer();
     $mail->setTo('jameskmw48@gmail.com');
-    $mail->setFrom('devjameskm48@mail.com', 'James Kamau');
+    $mail->setFrom('devjamesm48@mail.com', 'James Kamau');
     $mail->setSubject('Hello WOrld');
     $mail->setMessage('<html></body>Just Want to know you.</body></html>');
     return $mail->send() ? 'Success' : 'Failure';

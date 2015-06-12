@@ -36,7 +36,7 @@ class Mailer {
         
         $headers = array(
             'MIME-Version: 1.0',
-            'Content-type:text/html; charset=iso-8859-1',
+            'Content-type:text/plain; charset=iso-8859-1',
             'Content-Transfer-Encoding: 7bit'
         );
         
