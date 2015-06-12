@@ -57,13 +57,24 @@ Route::get('test', function() {
     $to = 'jameskmw48@gmail.com';
     $subject = 'Hi There';
     $body = '<html><body>Hello World</body></html>';
-
     $from = 'testing@gmail.com';
-    $headersfrom = '';
-    $headersfrom .= 'MIME-Version: 1.0' . "\r\n";
-    $headersfrom .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-    $headersfrom .= 'From: ' . $from . ' ' . "\r\n";
-    return mail($to, $subject, $body, $headersfrom)? 'Succes': 'Failure';
+    if (strtoupper(substr(PHP_OS, 0, 3) == 'WIN')) {
+        $eol = "\r\n";
+    } elseif (strtoupper(substr(PHP_OS, 0, 3) == 'MAC')) {
+        $eol = "\r";
+    } else {
+        $eol = "\n";
+    }
+
+    $pattern[0] = "\'";
+    $pattern[1] = '\"';
+    $replace[0] = "'";
+    $replace[1] = '"';
+    $mess = str_replace($pattern, $replace, $body);
+    $headers = "From: " . $from . $eol .
+            "MIME-Version: 1.0" . $eol .
+            "Content-type: text/html; charset=iso-8859-1";
+    return mail($to, $subject, $body, $headers)? 'Success':'failure';
 });
 
 
