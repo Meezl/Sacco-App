@@ -1,61 +1,70 @@
-@extends('app')
+@extends('base.master')
+
+@section('title')
+Login
+@stop
 
 @section('content')
-<div class="container-fluid">
-	<div class="row">
-		<div class="col-md-8 col-md-offset-2">
-			<div class="panel panel-default">
-				<div class="panel-heading">Login</div>
-				<div class="panel-body">
-					@if (count($errors) > 0)
-						<div class="alert alert-danger">
-							<strong>Whoops!</strong> There were some problems with your input.<br><br>
-							<ul>
-								@foreach ($errors->all() as $error)
-									<li>{{ $error }}</li>
-								@endforeach
-							</ul>
-						</div>
-					@endif
 
-					<form class="form-horizontal" role="form" method="POST" action="{{ url('/auth/login') }}">
-						<input type="hidden" name="_token" value="{{ csrf_token() }}">
+<div id="page-login">
+    <div class="container">
+        @if(Session::has('error'))
+        <p class="alert alert-danger alert-dismissable text-center">{{ Session::get('error') }}</p>
+        @endif
+        <form method="post" action="{{ url('auth/login') }}" class="form-login">
+            {!! Form::token() !!}
+            <h2 class="form-login-heading">sign in now</h2>
+            <div class="login-wrap">
+                <input autocomplete="off" value="{{ $email or '' }}" name="email" type="email" autofocus="" placeholder="User ID" class="form-control">
+                {!!$errors->first('email', '<p class="small text-danger">:message</p>')!!}
+                <br>
+                <input name="password" type="password" placeholder="Password" class="form-control">
+                {!!$errors->first('password', '<p class="small text-danger">:message</p>')!!}
+                <br />
+                <label><input type="checkbox" name="remember" /> Remember me</label>
+                <label class="checkbox">
+                    <span class="pull-right">
+                        <a href="#forgotPass" data-toggle="modal"> Forgot Password?</a>
 
-						<div class="form-group">
-							<label class="col-md-4 control-label">E-Mail Address</label>
-							<div class="col-md-6">
-								<input type="email" class="form-control" name="email" value="{{ old('email') }}">
-							</div>
-						</div>
+                    </span>
+                </label>
+                <button type="submit" class="btn btn-theme btn-block"><i class="fa fa-lock"></i> SIGN IN</button>                
 
-						<div class="form-group">
-							<label class="col-md-4 control-label">Password</label>
-							<div class="col-md-6">
-								<input type="password" class="form-control" name="password">
-							</div>
-						</div>
+            </div>
+        </form>
+        
+        <form method="" action="">
+             <!-- Modal -->
+            <div class="modal fade" id="forgotPass" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                            <h4 class="modal-title">Forgot Password ?</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>Enter your e-mail address below to reset your password.</p>
+                            <input type="text" class="form-control placeholder-no-fix" autocomplete="off" placeholder="Email" name="email">
 
-						<div class="form-group">
-							<div class="col-md-6 col-md-offset-4">
-								<div class="checkbox">
-									<label>
-										<input type="checkbox" name="remember"> Remember Me
-									</label>
-								</div>
-							</div>
-						</div>
-
-						<div class="form-group">
-							<div class="col-md-6 col-md-offset-4">
-								<button type="submit" class="btn btn-primary">Login</button>
-
-								<a class="btn btn-link" href="{{ url('/password/email') }}">Forgot Your Password?</a>
-							</div>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-theme">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- modal -->
+        </form>
+    </div>
 </div>
-@endsection
+@stop
+
+@section('scripts')
+<script src="{{ asset('assets/js/jquery.backstretch.min.js') }}"></script>
+<script>
+    (function($) {
+        $.backstretch("{{ asset('assets/img/dark-offices.jpg') }}", {speed: 500});
+    }(jQuery));
+</script>
+@stop

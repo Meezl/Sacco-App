@@ -1,38 +1,100 @@
-<?php namespace App\Http\Controllers\Auth;
+<?php
+
+namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Contracts\Auth\Guard;
-use Illuminate\Contracts\Auth\Registrar;
-use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
+use App\User;
 
+/**
+ * Description of AuthController
+ *
+ * @author James
+ */
 class AuthController extends Controller {
 
-	/*
-	|--------------------------------------------------------------------------
-	| Registration & Login Controller
-	|--------------------------------------------------------------------------
-	|
-	| This controller handles the registration of new users, as well as the
-	| authentication of existing users. By default, this controller uses
-	| a simple trait to add these behaviors. Why don't you explore it?
-	|
-	*/
+    public function getRegister() {
+        $user = new User();
+        return view('auth.register', compact('user'));
+    }
 
-	use AuthenticatesAndRegistersUsers;
+    public function postRegister() {
+        $data = \Input::all();
+        $rules = array(
+            'email' => 'required|email',
+            'phone_number' => 'regex:/^07[\d]{8}$/',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'password' => 'required|confirmed|min:6'
+        );
 
-	/**
-	 * Create a new authentication controller instance.
-	 *
-	 * @param  \Illuminate\Contracts\Auth\Guard  $auth
-	 * @param  \Illuminate\Contracts\Auth\Registrar  $registrar
-	 * @return void
-	 */
-	public function __construct(Guard $auth, Registrar $registrar)
-	{
-		$this->auth = $auth;
-		$this->registrar = $registrar;
+        $validator = \Validator::make($data, $rules);
+        $user = new User();
+        $this->map($data, $user);
 
-		$this->middleware('guest', ['except' => 'getLogout']);
-	}
+        if ($validator->fails()) {
+            \Session::flash('error', 'Please Correct the Highlighted Errors');
+            return view('auth.register', compact('user'))->withErrors($validator->messages());
+        }
+
+        $user->phone = '+254' . substr($data['phone_number'], 1);
+        $user->password = \Hash::make($data['password']);
+        $user->save();
+
+        //send mail
+
+        \Session::flash('success', 'New User Successfuly Created');
+        return \Redirect::action('Auth\AuthController@getRegister');
+    }
+
+    public function getLogin() {
+        return view('auth.login');
+    }
+
+    public function postLogin() {
+        $data = \Input::all();
+        $rules = array(
+            'email' => 'required|email',
+            'password' => 'required'
+        );
+
+        $validator = \Validator::make($data, $rules);
+        if ($validator->fails()) {
+            \Session::flash('error', 'Correct the higlighted Errors');
+            $email = \Input::has('email') ? $data['email'] : null;
+            return view('auth.login', compact('email'))->withErrors($validator->messages());
+        }
+
+        $credentials = \Input::only('email', 'password');
+        if (\Auth::attempt($credentials, \Input::has('remember'))) {
+            return \Redirect::intended(\URL::action('DashBoardController@getIndex'));
+        }
+
+        \Session::flash('error', 'Invalid User ID/Password Combination ');
+        $email = \Input::has('email') ? $data['email'] : null;
+        return view('auth.login', compact('email'));
+    }
+
+    public function getLogout() {
+        \Auth::logout();
+        return \Redirect::to('auth/login');
+    }
+
+    private function map(array $data, User $user) {
+        if (array_key_exists('email', $data)) {
+            $user->email = $data['email'];
+        }
+
+        if (array_key_exists('phone_number', $data)) {
+            $user->phone = $data['phone_number'];
+        }
+
+        if (array_key_exists('first_name', $data)) {
+            $user->first_name = $data['first_name'];
+        }
+
+        if (array_key_exists('last_name', $data)) {
+            $user->last_name = $data['last_name'];
+        }
+    }
 
 }

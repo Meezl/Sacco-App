@@ -1,65 +1,71 @@
-@extends('app')
+@extends('base.backend')
 
-@section('content')
-<div class="container-fluid">
-	<div class="row">
-		<div class="col-md-8 col-md-offset-2">
-			<div class="panel panel-default">
-				<div class="panel-heading">Register</div>
-				<div class="panel-body">
-					@if (count($errors) > 0)
-						<div class="alert alert-danger">
-							<strong>Whoops!</strong> There were some problems with your input.<br><br>
-							<ul>
-								@foreach ($errors->all() as $error)
-									<li>{{ $error }}</li>
-								@endforeach
-							</ul>
-						</div>
-					@endif
+@section('title')
+Register New User
+@stop
 
-					<form class="form-horizontal" role="form" method="POST" action="{{ url('/auth/register') }}">
-						<input type="hidden" name="_token" value="{{ csrf_token() }}">
+@section('content-title')
+Register New Admin
+@stop
 
-						<div class="form-group">
-							<label class="col-md-4 control-label">Name</label>
-							<div class="col-md-6">
-								<input type="text" class="form-control" name="name" value="{{ old('name') }}">
-							</div>
-						</div>
+@section('inner-content')
+<form method="post" action="{{ action('Auth\AuthController@postRegister') }}">
+    {!! Form::token() !!}
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label>First Name*</label>
+                <input value="{{ $user->first_name }}" type="text" name="first_name" class="form-control" />
+                {!!$errors->first('first_name', '<p class="small text-danger">:message</p>')!!}
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label>Last Name*</label>
+                <input value="{{ $user->last_name }}" type="text" name="last_name" class="form-control" />
+                {!!$errors->first('last_name', '<p class="small text-danger">:message</p>')!!}
+            </div>
+        </div>
+    </div>
 
-						<div class="form-group">
-							<label class="col-md-4 control-label">E-Mail Address</label>
-							<div class="col-md-6">
-								<input type="email" class="form-control" name="email" value="{{ old('email') }}">
-							</div>
-						</div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label>Email*</label>
+                <input value="{{ $user->email }}" type="email" name="email" class="form-control" />
+                {!!$errors->first('email', '<p class="small text-danger">:message</p>')!!}
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input value="{{ $user->phone }}" type="text" name="phone_number" class="form-control" />
+                <p class="help-block small">Phone Numbers should be valid Kenyan numbers in the format. 0702123456</p>
+                {!!$errors->first('phone_number', '<p class="small text-danger">:message</p>')!!}
+            </div>
+        </div>
+    </div>
 
-						<div class="form-group">
-							<label class="col-md-4 control-label">Password</label>
-							<div class="col-md-6">
-								<input type="password" class="form-control" name="password">
-							</div>
-						</div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label>Password*</label>
+                <input type="password" name="password" class="form-control" />
+                {!!$errors->first('password', '<p class="small text-danger">:message</p>')!!}
+            </div>
 
-						<div class="form-group">
-							<label class="col-md-4 control-label">Confirm Password</label>
-							<div class="col-md-6">
-								<input type="password" class="form-control" name="password_confirmation">
-							</div>
-						</div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label>Confirm Password</label>
+                <input type="password" name="password_confirmation" class="form-control" />                
+                <p class="help-block small">At least 6 characters in length</p>
+            </div>
+        </div>
+    </div>
 
-						<div class="form-group">
-							<div class="col-md-6 col-md-offset-4">
-								<button type="submit" class="btn btn-primary">
-									Register
-								</button>
-							</div>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-@endsection
+    <button type="submit" class="btn btn-success pull-right">Submit</button>
+    <div class="clearfix"></div>
+
+</form>
+@stop
