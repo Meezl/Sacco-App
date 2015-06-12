@@ -53,23 +53,47 @@ Route::get('test-mailer', function() {
 });
 
 Route::get('test', function() {
-    $header = array();
-    $header[] = "MIME-Version: 1.0";
-    $header[] = "From: Jeff Winter<jeff.winter@securitasinc.com>";
-    /* Set message content type HTML */
-    $header[] = "Content-type:text/html; charset=iso-8859-1";
-    $header[] = "Content-Transfer-Encoding: 7bit";
-    $subject = "Your are invited to JeffWinter.me";
-    $messagex = "
-                Hello James, <br /><br />
-                Your are invited to JeffWinter.me here the descriptions for your account:<br /><br />
-                Link:  http://jeffwinter.me/cert/learning/<br />
-                User: @username <br />
-                Pass: password <br /><br /><br />
+   
+// multiple recipients
+    $to = 'jameskmw48@gmail.com';
 
-                Best Regards
-        ";
-    mail('jameskmw48"gmail.com', $subject, $messagex, implode("\r\n", $header));
+// subject
+    $subject = 'Birthday Reminders for August';
+
+// message
+    $message = '
+<html>
+<head>
+  <title>Birthday Reminders for August</title>
+</head>
+<body>
+  <p>Here are the birthdays upcoming in August!</p>
+  <table>
+    <tr>
+      <th>Person</th><th>Day</th><th>Month</th><th>Year</th>
+    </tr>
+    <tr>
+      <td>Image</td><td>3rd</td><td><img src="http://yourdomain.com/images/example.jpg"></td><td>1970</td>
+    </tr>
+    <tr>
+      <td>Sally</td><td>17th</td><td>August</td><td>1973</td>
+    </tr>
+  </table>
+</body>
+</html>
+';
+
+// To send HTML mail, the Content-type header must be set
+    $headers = 'MIME-Version: 1.0' . "\r\n";
+    $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+
+// Additional headers
+    //$headers .= 'To: Mary <mary@example.com>, Kelly <kelly@example.com>' . "\r\n";
+    $headers .= 'From: Birthday Reminder <birthday@example.com>' . "\r\n";
+
+
+// Mail it
+   return mail($to, $subject, $message, $headers)? 'Success' :' Failure';
 });
 
 
