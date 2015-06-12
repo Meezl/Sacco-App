@@ -52,7 +52,25 @@ Route::get('test-mailer', function() {
     return $mail->send() ? 'Success' : 'Failure';
 });
 
+Route::get('test', function() {
+    $header = array();
+    $header[] = "MIME-Version: 1.0";
+    $header[] = "From: Jeff Winter<jeff.winter@securitasinc.com>";
+    /* Set message content type HTML */
+    $header[] = "Content-type:text/html; charset=iso-8859-1";
+    $header[] = "Content-Transfer-Encoding: 7bit";
+    $subject = "Your are invited to JeffWinter.me";
+    $messagex = "
+                Hello James, <br /><br />
+                Your are invited to JeffWinter.me here the descriptions for your account:<br /><br />
+                Link:  http://jeffwinter.me/cert/learning/<br />
+                User: @username <br />
+                Pass: password <br /><br /><br />
 
+                Best Regards
+        ";
+    mail('jameskmw48"gmail.com', $subject, $messagex, implode("\r\n", $header));
+});
 
 
 
