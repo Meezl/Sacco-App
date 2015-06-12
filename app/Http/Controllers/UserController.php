@@ -70,14 +70,16 @@ class UserController extends Controller {
 
         $validator = \Validator::make($data, $rules, PhoneValidator::message());
         $user = new User();
-        $this->map($data, $user);
+        self::map($data, $user);
 
         if ($validator->fails()) {
             \Session::flash('error', 'Please Correct the Highlighted Errors');
             return view('users.register', compact('user'))->withErrors($validator->messages());
         }
-
-        $user->phone = '+254' . substr($data['phone_number'], 1);
+        if (strpos($data['phone_number'], '+254') === false) {
+            $user->phone = '+254' . substr($data['phone_number'], 1);
+        }
+        
         $user->password = \Hash::make($data['password']);
         $user->save();
 
@@ -88,7 +90,7 @@ class UserController extends Controller {
     }
     
     
-    private function map(array $data, User $user) {
+    public static function map(array $data, User $user) {
         if (array_key_exists('email', $data)) {
             $user->email = $data['email'];
         }

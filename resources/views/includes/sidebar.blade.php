@@ -51,15 +51,11 @@
                     <li><a href="{{ action('UserController@getRegister') }}">Add User</a></li>
                 </ul>
             </li>
-            <li class="sub-menu">
-                <a href="#">
+            <li class="mt">
+                <a href="{{ action('AccountController@getIndex') }}">
                     <i class="fa fa-cogs"></i>
                     <span>Account Settings</span>
-                </a>
-                <ul class="sub">
-                    <li><a href="">General</a></li>
-                    <li><a href="">Notifications</a></li>
-                </ul>
+                </a>                
             </li>
         </ul>
     </div>

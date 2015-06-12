@@ -34,8 +34,36 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      */
     protected $hidden = ['password', 'remember_token'];
 
+    /**
+     * User Profile Photo
+     * @var App\Model\Image
+     */
+    private $avatar = false;
+
     public function getFullName() {
         return $this->first_name . ' ' . $this->last_name;
+    }
+
+    public function images() {
+        return $this->hasMany('App\Models\Image');
+    }
+
+    /**
+     * Get User Profile Image
+     * @return App\Models\Image profile image
+     */
+    public function getAvatar() {
+        if ($this->avatar === false) {
+            if ($this->image_id) {
+                $this->avatar = $this->images()
+                        ->where('id', '=', $this->image_id)
+                        ->first();
+            }
+            else {
+                return null;
+            }
+        }
+        return $this->avatar;
     }
 
 }

@@ -16,14 +16,14 @@ Register New Admin
             <div class="form-group">
                 <label>First Name*</label>
                 <input value="{{ $user->first_name }}" type="text" name="first_name" class="form-control" />
-                {!!$errors->first('first_name', '<p class="small text-danger">:message</p>')!!}
+                {!! $errors->first('first_name', '<p class="small text-danger">:message</p>') !!}
             </div>
         </div>
         <div class="col-sm-6">
             <div class="form-group">
                 <label>Last Name*</label>
                 <input value="{{ $user->last_name }}" type="text" name="last_name" class="form-control" />
-                {!!$errors->first('last_name', '<p class="small text-danger">:message</p>')!!}
+                {!! $errors->first('last_name', '<p class="small text-danger">:message</p>') !!}
             </div>
         </div>
     </div>
@@ -33,15 +33,15 @@ Register New Admin
             <div class="form-group">
                 <label>Email*</label>
                 <input value="{{ $user->email }}" type="email" name="email" class="form-control" />
-                {!!$errors->first('email', '<p class="small text-danger">:message</p>')!!}
+                {!! $errors->first('email', '<p class="small text-danger">:message</p>') !!}
             </div>
         </div>
         <div class="col-sm-6">
             <div class="form-group">
                 <label>Phone Number</label>
                 <input value="{{ $user->phone }}" type="text" name="phone_number" class="form-control" />
-                <p class="help-block small">Phone Number should be a valid Kenyan numbers in the format. 0702123456</p>
-                {!!$errors->first('phone_number', '<p class="small text-danger">:message</p>')!!}
+                <p class="help-block small">Phone Number should be a valid Kenyan number in the format. 0702123456</p>
+                {!! $errors->first('phone_number', '<p class="small text-danger">:message</p>') !!}
             </div>
         </div>
     </div>
@@ -51,7 +51,7 @@ Register New Admin
             <div class="form-group">
                 <label>Password*</label>
                 <input type="password" name="password" class="form-control" />
-                {!!$errors->first('password', '<p class="small text-danger">:message</p>')!!}
+                {!! $errors->first('password', '<p class="small text-danger">:message</p>') !!}
             </div>
 
         </div>

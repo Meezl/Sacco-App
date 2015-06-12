@@ -27,10 +27,16 @@ Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function() {
     Route::controller('user', 'UserController');
     
     Route::controller('contacts', 'ContactController');
+    
+    Route::controller('account', 'AccountController');
 });
 
 
-Route::controller('auth/login', 'Auth\AuthController');
+Route::controller('auth', 'Auth\AuthController');
+
+Route::get('test', function() {
+   return public_path(); 
+});
 
 Route::get('/users', function() {
     return view('users');
