@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\User;
+use App\Validators\PhoneValidator;
 
 /**
  * Description of AuthController
@@ -20,14 +21,14 @@ class AuthController extends Controller {
     public function postRegister() {
         $data = \Input::all();
         $rules = array(
-            'email' => 'required|email',
-            'phone_number' => 'regex:/^07[\d]{8}$/',
+            'email' => 'required|email|not_in:users,email',
+            'phone_number' => 'kmobile',
             'first_name' => 'required',
             'last_name' => 'required',
             'password' => 'required|confirmed|min:6'
         );
 
-        $validator = \Validator::make($data, $rules);
+        $validator = \Validator::make($data, $rules, PhoneValidator::message());
         $user = new User();
         $this->map($data, $user);
 

@@ -40,7 +40,7 @@ Register New Admin
             <div class="form-group">
                 <label>Phone Number</label>
                 <input value="{{ $user->phone }}" type="text" name="phone_number" class="form-control" />
-                <p class="help-block small">Phone Numbers should be valid Kenyan numbers in the format. 0702123456</p>
+                <p class="help-block small">Phone Number should be a valid Kenyan numbers in the format. 0702123456</p>
                 {!!$errors->first('phone_number', '<p class="small text-danger">:message</p>')!!}
             </div>
         </div>
