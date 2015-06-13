@@ -31,23 +31,13 @@ Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function() {
     Route::controller('account', 'AccountController');
     
     Route::controller('category', 'CategoryController');
+    
+    Route::controller('campaign', 'CampaignController');
 });
 
 
 Route::controller('auth', 'Auth\AuthController');
 
 Route::get('test', function() {
-   return public_path(); 
-});
-
-Route::get('/users', function() {
-    return view('users');
-});
-
-Route::get('campaigns', function() {
-    return view('campaigns');
-});
-
-Route::get('messages', function() {
-    return view('messages');
+   return sprintf('A%04d', 10);
 });

@@ -1,7 +1,15 @@
 <aside>
     <div id="sidebar" class="nav-collapse">
         <ul class="sidebar-menu" id="nav-accordion">
-            <p class="centered"><a href=""><span class="user-image glyphicon glyphicon-user fa-5x"></span></a></p>
+            <p class="centered">
+                @if(Auth::user()->getAvatar())
+                <a href="{{ asset('uploads/images/'. Auth::user()->getAvatar()->filename) }}">
+                    <img src="{{ asset('uploads/images/'. Auth::user()->getAvatar()->getCropped()) }}" alt="{{ Auth::user()->getFullName() }}" class="img-responsive" />
+                </a>
+                @else
+                <a href=""><span class="user-image glyphicon glyphicon-user fa-5x"></span></a></p>
+                @endif
+
             <h5 class="centered">Welcome {{Auth::user()->last_name}}</h5>
             <li class="mt">
                 <a class="" href="{{ action('DashBoardController@getIndex') }}">
@@ -16,7 +24,7 @@
                 </a>
                 <ul class="sub">
                     <li><a href="">All</a></li>
-                    <li><a href="">Create New</a></li>
+                    <li><a href="{{ action('CampaignController@getNew') }}">Create New</a></li>
                     <li><a href="">Trash</a></li>
                 </ul>
             </li>
@@ -52,7 +60,7 @@
                     <li><a href="{{ action('UserController@getRegister') }}">Add User</a></li>
                 </ul>
             </li>
-            <li class="mt">
+            <li>
                 <a href="{{ action('AccountController@getIndex') }}">
                     <i class="fa fa-cogs"></i>
                     <span>Account Settings</span>

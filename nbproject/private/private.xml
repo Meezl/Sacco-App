@@ -5,10 +5,11 @@
         <group>
             <file>file:/C:/xampp/htdocs/sms/resources/views/base/backend.blade.php</file>
             <file>file:/C:/xampp/htdocs/sms/resources/views/includes/sidebar.blade.php</file>
-            <file>file:/C:/xampp/htdocs/sms/resources/views/users/register.blade.php</file>
-            <file>file:/C:/xampp/htdocs/sms/app/Http/Controllers/UserController.php</file>
-            <file>file:/C:/xampp/htdocs/sms/app/Http/Controllers/Auth/AuthController.php</file>
+            <file>file:/C:/xampp/htdocs/sms/app/Models/Campaign.php</file>
+            <file>file:/C:/xampp/htdocs/sms/app/Http/Controllers/CampaignController.php</file>
+            <file>file:/C:/xampp/htdocs/sms/resources/views/campaigns/add-answers.blade.php</file>
             <file>file:/C:/xampp/htdocs/sms/app/Http/routes.php</file>
+            <file>file:/C:/xampp/htdocs/sms/public/css/main.css</file>
         </group>
     </open-files>
 </project-private>

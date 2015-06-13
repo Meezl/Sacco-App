@@ -21,6 +21,16 @@
     height: 200px;
 }
 
+#campaign-form-new,
+#answers-form-new{
+    max-width: 700px;
+}
+
 .btn.btn-xs {
     margin: 5px 0;
+}
+
+.img-responsive{
+    margin-left: auto;
+    margin-right: auto;
 }
