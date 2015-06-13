@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Campaign;
 use App\Models\Category;
 use App\Models\Answer;
+use App\Models\Contact;
 
 /**
  * Description of CampaignController
@@ -12,6 +13,9 @@ use App\Models\Answer;
  * @author jameskmb
  */
 class CampaignController extends Controller {
+
+    const CONTACTS_PER_PAGE = 20;
+    const CAMPAIGNS_PER_PAGE = 10;
 
     public function getNew($id = null) {
         $campaign = $this->retrieve($id);
@@ -58,12 +62,39 @@ class CampaignController extends Controller {
             return view('campaigns.new', compact('campaign'));
         }
 
+        $campaign->creator_id = \Auth::user()->id;
         $campaign->save();
         \Session::flash('success', 'Campaign Successfuly Updated');
+
+        //select contacts that will be associated with this campaign
+        //add everyone
+        if ($campaign->category === 0) {
+            $contacts = Contact::lists('id');
+        }
+        //add from category
+        elseif ($campaign->category) {
+            $contacts = $cat->contacts()->lists('id');
+        }
+
+        //prevent duplicate insertion
+        $existing = $campaign->contacts()->lists('id');
+        if (count($contacts)) {
+            $data = [];
+            foreach ($contacts as $c) {
+                if (array_search($c, $existing) !== false) {
+                    continue;
+                }
+                $data[] = array(
+                    'contact_id' => $c->id,
+                    'campaign_id' => $campaign->id
+                );
+                \DB::table('Campaign_contacts')->insert($data);
+            }
+        }
         if ($campaign->possible_responses) {
             return \Redirect::action('CampaignController@getAnswers', [$campaign->id]);
         }
-        //remove any associated responses
+        //to do: remove any associated responses
         return \Redirect::action('CampaignController@getContacts', [$campaign->id]);
     }
 
@@ -91,52 +122,124 @@ class CampaignController extends Controller {
         $data = []; //responses to be saved
         foreach ($responses as $r) {
             $trimed = trim($r);
-            if( strlen($trimed) && strlen($trimed) < 80) {
+            if (strlen($trimed) && strlen($trimed) < 80) {
                 $data[] = array(
                     'campaign_id' => $campaign->id,
                     'message' => $trimed
                 );
-            }
-            else {
+            } else {
                 $ignored[] = $r;
             }
         }
-        
-        if(count($data)) {
+
+        if (count($data)) {
             \DB::table('answers')->insert($data);
-            \Session::flash('success', count($data).' responses have been successfuly added');
+            \Session::flash('success', count($data) . ' responses have been successfuly added');
         }
-        
-        if(count($ignored)) {
-            \Session::flash('error', count($ignored).' responses were not inserted because they were either missing or exceed the maximum character length(80)');
+
+        if (count($ignored)) {
+            \Session::flash('error', count($ignored) . ' responses were not inserted because they were either missing or exceed the maximum character length(80)');
             return view('campaigns.add-answers', compact('campaign', 'ignored'));
         }
-        
+
         return \Redirect::action('CampaignController@getAnswers', [$id]);
     }
-    
+
     public function postRemoveResponses($id) {
         $campaign = $this->retrieve($id);
-       
-        if(!\Input::has('responses') || count(\Input::get('responses')) == 0) {
+
+        if (!\Input::has('responses') || count(\Input::get('responses')) == 0) {
             \Session::flash('error', 'You did not select what you wanted to remove');
-        }
-        else {
+        } else {
             Answer::whereIn('id', \Input::get('responses'))
                     ->where('campaign_id', '=', $campaign->id)
                     ->delete();
             \Session::flash('success', 'Responses Successfuly Removed');
         }
-        return \Redirect::action('CampaignController@getAnswers', [$id]);    
-        
+        return \Redirect::action('CampaignController@getAnswers', [$id]);
     }
-    
+
     public function getContacts($id) {
         $campaign = $this->retrieve($id);
-        if($campaign->answers()->count() != $campaign->possible_responses) {
+        if ($campaign->answers()->count() != $campaign->possible_responses) {
             \Session::flash('error', 'Please Finish adding all the possible responses first');
-            return \Redirect::action('CampaignController@getAnswers', [$id]); 
+            return \Redirect::action('CampaignController@getAnswers', [$id]);
         }
+        $contacts = $campaign->contacts()
+                ->paginate(self::CONTACTS_PER_PAGE)
+                ->setPath(\URL::current());
+        return view('campaigns.added-contacts', compact('contacts', 'campaign'));
+    }
+
+    public function postContacts($id) {
+        $campaign = $this->retrieve($id);
+        if (!\Input::has('remove') || count(\Input::get('remove')) == 0) {
+            \Session::flash('error', 'Please Select The contacts you want to remove');
+        } else {
+            $count = \DB::table('campaign_contacts')
+                    ->whereIn('contact_id', \Input::get('remove'))
+                    ->where('campaign_id', '=', $campaign->id)
+                    ->delete();
+            \Debugbar::info(compact('count'));
+            \Session::flash('success', 'Contacts Successfuly Removed');
+        }
+
+        return \Redirect::action('CampaignController@getContacts', [$id]);
+    }
+
+    public function getAddContacts($id) {
+        $campaign = $this->retrieve($id);
+        $existing = $campaign->contacts()->lists('id');
+
+        if (count($existing)) {
+            $contacts = Contact::whereNotIn('id', $existing)
+                    ->paginate(self::CONTACTS_PER_PAGE)
+                    ->setPath(\URL::current());
+        } else {
+            $contacts = Contact::paginate(self::CONTACTS_PER_PAGE)
+                    ->setPath(\URL::current());
+        }
+        return view('campaigns.add-contacts', compact('campaign', 'contacts'));
+    }
+
+    public function postAddContacts($id) {
+        $campaign = $this->retrieve($id);
+
+
+        if (!\Input::has('add') || count(\Input::get('add')) == 0) {
+            \Session::flash('error', 'Please Select The contacts you want to add');
+        } else {
+            //prevent dulicates
+            $existing = $campaign->contacts()->lists('id');
+            $contacts = \Input::get('add');
+            $data = [];
+            foreach ($contacts as $c) {
+                if (array_search($c, $existing) !== false) {
+                    continue;
+                }
+                $data[] = array(
+                    'contact_id' => $c,
+                    'campaign_id' => $campaign->id
+                );
+            }
+            //insert
+            if (count($data)) {
+                \DB::table('campaign_contacts')->insert($data);
+                \Session::flash('success', 'Contacts Successfuly Added');
+            } else {
+                \Session::flash('error', 'Nothing Added');
+            }
+        }
+        
+        return \Redirect::action('CampaignController@getAddContacts', [$campaign->id]);
+    }
+    
+    public function getReview($id) {
+        $campaign = $this->retrieve($id);
+        $plain = $campaign->getLengthStats(false);
+        $help = $campaign->getLengthStats(true);
+        
+        return view('campaigns.review', compact('campaign', 'plain', 'help'));
     }
 
     private function retrieve($id) {
@@ -153,6 +256,12 @@ class CampaignController extends Controller {
 
         $this->show404Unless($campaign);
         return $campaign;
+    }
+    
+    public function getIndex() {
+        $campaigns = Campaign::paginate(self::CAMPAIGNS_PER_PAGE)
+                ->setPath(\URL::current());
+        return view('campaigns.index', compact('campaigns'));
     }
 
     private function map(array $data, Campaign $c) {

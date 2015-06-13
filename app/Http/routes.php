@@ -39,5 +39,6 @@ Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function() {
 Route::controller('auth', 'Auth\AuthController');
 
 Route::get('test', function() {
-   return sprintf('A%04d', 10);
+   $string = 'A';
+    return  ++$string;
 });

@@ -128,6 +128,13 @@ var Script = function () {
                 .prop('checked', true);
         return false;
     });
+    
+    $('#deselect-all').click(function() {
+        $(this).closest('form')
+                .find('input[type=checkbox]')
+                .prop('checked', false);
+        return false;
+    });
 
 
 }();
