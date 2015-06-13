@@ -39,6 +39,7 @@
                 <ul class="sub">
                     <li><a href="{{ action('ContactController@getIndex') }}">All</a></li>
                     <li><a href="{{ action('ContactController@getNew') }}">Create New</a></li>
+                    <li><a href="{{ action('CategoryController@getIndex') }}">Categories</a></li>
                 </ul>
             </li>
             <li class="sub-menu">

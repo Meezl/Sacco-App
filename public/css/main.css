@@ -13,6 +13,14 @@
     max-width: 400px;
 }
 
+#category-form-new{
+    max-width: 600px;
+}
+
+#category-form-new textarea {
+    height: 200px;
+}
+
 .btn.btn-xs {
     margin: 5px 0;
 }

@@ -29,6 +29,8 @@ Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function() {
     Route::controller('contacts', 'ContactController');
     
     Route::controller('account', 'AccountController');
+    
+    Route::controller('category', 'CategoryController');
 });
 
 

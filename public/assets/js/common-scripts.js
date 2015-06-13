@@ -121,5 +121,13 @@ var Script = function () {
         return window.confirm('Are Sure you want to delete it?');
     });
 
+    //select all checkboxes on a form
+    $('#select-all').click(function() {
+        $(this).closest('form')
+                .find('input[type=checkbox]')
+                .prop('checked', true);
+        return false;
+    });
+
 
 }();
