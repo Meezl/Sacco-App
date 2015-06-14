@@ -43,5 +43,10 @@ All Contacts
 
 {!! $contacts->render() !!}
 
+@if( $contacts->isEmpty() )
+<p class="alert alert-info">Whoops! Looks like currently there are no Contacts. You can create one
+    <a href="{{ action('ContactController@getNew') }}">here</a></p>
+@endif
+
 @stop
 
