@@ -9,6 +9,12 @@ All System Users
 @stop
 
 @section('inner-content')
+<ul class="nav nav-pills">
+    <li class="active"><a href="{{ action('UserController@getIndex') }}">Users</a></li>
+    <li><a href="{{ action('UserController@getRegister') }}">New</a></li>
+</ul>
+<br />
+
 <table class="table table-striped table-hover table-bordered">
     <thead>
         <tr>

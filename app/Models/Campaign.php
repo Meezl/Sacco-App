@@ -64,7 +64,8 @@ class Campaign extends \Eloquent {
         if (!$this->id) {
             return null;
         }
-        $format = "Reply for free to this sms in the format EGERS %s %s";
+        $number = config('sms.system_number');
+        $format = "Reply for free to $number in the format EGERS %s %s";
         if ($this->possible_responses) {
             return sprintf($format, $this->getIdString(), 'A where A is your reply');
         } else {
@@ -96,12 +97,8 @@ class Campaign extends \Eloquent {
         return $string;
     }
 
-    /**
-     * 
-     * @param type $withHelp
-     */
-    public function getLengthStats($withHelp = true) {
-        $sms = $this->getSms($withHelp);
+    public function getLengthStats() {
+        $sms = $this->getSms();
         
         if($this->send_greeting) {
             $sms = "Hello userlastName\n". $sms;
@@ -121,7 +118,8 @@ class Campaign extends \Eloquent {
         return (object) $data;
     }
 
-    public function getSms($withHelp = true) {
+    public function getSms() {
+        $withHelp = $this->help_text;
         $sms = $this->message? : '';
         $sms .= "\n" . ($this->getResponseText()? : '');
         $sms .= ($withHelp ? $this->getHelpText() : '');

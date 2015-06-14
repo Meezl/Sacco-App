@@ -1,9 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Validators\PhoneValidator;
 
+use App\Validators\PhoneValidator;
 use App\User;
+use App\Models\Message;
 
 /**
  * Description of UserController
@@ -62,7 +63,7 @@ class UserController extends Controller {
         $data = \Input::all();
         $rules = array(
             'email' => 'required|email|unique:users,email',
-            'phone_number' => 'kmobile',
+            'phone_number' => 'required|kmobile',
             'first_name' => 'required',
             'last_name' => 'required',
             'password' => 'required|confirmed|min:6'
@@ -80,16 +81,33 @@ class UserController extends Controller {
             $user->phone = '+254' . substr($data['phone_number'], 1);
         }
         
+        
         $user->password = \Hash::make($data['password']);
         $user->save();
-
-        //send mail
+        
+        //send notification
+        $this->sendRegNotification($user, $data['password']);
 
         \Session::flash('success', 'New User Successfuly Created');
         return \Redirect::action('UserController@getRegister');
     }
-    
-    
+
+    private function sendRegNotification(User $user, $pass) {
+        try {
+            $username = $user->email;
+            $text = (string) \View::make('sms.registration', compact('username', 'pass'));
+            $status = MessageHelper::sendRaw($user->phone, $text);
+        } catch (Exception $ex) {
+            \Session::flash('info', 'Error (' . $ex->getMessage() . ') while notifiying the user about his registration. Send login credentials to him/her manualy');
+        }
+        if (count($status)) {
+            $msg = new Message();
+            $msg->text = $text;
+            MessageHelper::map($status, $msg);
+            $msg->save();
+        }
+    }
+
     public static function map(array $data, User $user) {
         if (array_key_exists('email', $data)) {
             $user->email = $data['email'];

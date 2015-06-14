@@ -24,16 +24,15 @@ class CampaignController extends Controller {
 
     public function postNew($id = null) {
         $campaign = $this->retrieve($id);
-        
-        //implement greeting later
-        $campaign->send_greeting = 0;
-        
+
+
         $rules = array(
             'title' => 'required|max:200',
             'description' => 'required',
             'message' => 'required|max:900',
             'possible_responses' => 'required|integer|between:0,26',
-            'category' => 'required|integer'
+            'category' => 'required|integer',
+            'help_text' => 'required|in:0,1'
         );
 
         $data = \Input::all();
@@ -44,7 +43,7 @@ class CampaignController extends Controller {
             \Session::flash('error', 'Please Correct The Higlighted Errors');
             return view('campaigns.new', compact('campaign'))->withErrors($validator->messages());
         }
-        
+
         //manual
         if ($data['category'] == -1) {
             $campaign->category_id = null;
@@ -71,7 +70,7 @@ class CampaignController extends Controller {
 
         //select contacts that will be associated with this campaign
         //add everyone
-        if (!is_null($campaign->category_id) && $campaign->category_id  == 0) {
+        if (!is_null($campaign->category_id) && $campaign->category_id == 0) {
             $contacts = Contact::lists('id');
         }
         //add from category
@@ -80,17 +79,19 @@ class CampaignController extends Controller {
         }
 
         //prevent duplicate insertion
-        $existing = $campaign->contacts()->lists('id');                
-        if (!empty($contacts)  && count($contacts)) {
+        $existing = $campaign->contacts()->lists('id');
+        if (!empty($contacts) && count($contacts)) {
             $data = [];
             foreach ($contacts as $id) {
-                if (array_search($id, $existing) !== false) {continue;}
+                if (array_search($id, $existing) !== false) {
+                    continue;
+                }
                 $data[] = array(
                     'contact_id' => $id,
                     'campaign_id' => $campaign->id
                 );
             }
-            
+
             \DB::table(Campaign::TABLE_CAMPAIGN_CONTACTS)->insert($data);
         }
         if ($campaign->possible_responses) {
@@ -232,16 +233,48 @@ class CampaignController extends Controller {
                 \Session::flash('error', 'Nothing Added');
             }
         }
-        
+
         return \Redirect::action('CampaignController@getAddContacts', [$campaign->id]);
     }
-    
+
     public function getReview($id) {
         $campaign = $this->retrieve($id);
-        $plain = $campaign->getLengthStats(false);
-        $help = $campaign->getLengthStats(true);
+        $text = $campaign->getLengthStats();
+
+        return view('campaigns.review', compact('campaign', 'text'));
+    }
+
+    public function postSend($id) {
+        $campaign = $this->retrieve($id);
+        $contacts = $campaign->getContacts();
+        if ($contacts->isEmpty()) {
+            \Session::flash('error', 'Please Select The contacts That should receive this campaign');
+            return \Redirect::action('CampaignController@getAddContacts', [$id]);
+        }
+
+        $numbers = [];
+        foreach ($contacts as $c) {
+            $numbers[] = $c->phone;
+        }
+        try {
+            $text = $campaign->getSms();
+            $statuses = MessageHelper::sendFromSystem($numbers, $text);
+            //insert to db
+            $inserts = [];
+            foreach ($statuses as $stat) {
+                $stat['text'] = $text;
+                $inserts[] = $stat;
+            }
+            
+            \DB::table('messages')->insert($inserts);
+            \Session::flash('success', 'Text messages Sent successfuly.');
+            $campaign->is_active = 1;
+            $campaign->save();
+        } catch (\AfricasTalkingGatewayException $ex) {
+            \Session::flash('error', 'Error Sending Sms. More info: ' . $ex->getMessage());
+        }
         
-        return view('campaigns.review', compact('campaign', 'plain', 'help'));
+        return \Redirect::action('CampaignController@getIndex');
     }
 
     private function retrieve($id) {
@@ -259,19 +292,19 @@ class CampaignController extends Controller {
         $this->show404Unless($campaign);
         return $campaign;
     }
-    
+
     public function getIndex() {
         $campaigns = Campaign::whereNull('deleted_at')
                 ->paginate(self::CAMPAIGNS_PER_PAGE)
                 ->setPath(\URL::current());
         return view('campaigns.index', compact('campaigns'));
     }
-    
+
     public function getDelete($id) {
         $campaign = $this->retrieve($id);
         $campaign->deleted_at = date('Y-m-d H:i:s');
         $campaign->save();
-        \Session::flash('success', $campaign->title.' Successfuly Deleted');
+        \Session::flash('success', $campaign->title . ' Successfuly Deleted');
         return \Redirect::action('CampaignController@getIndex');
     }
 
@@ -292,12 +325,10 @@ class CampaignController extends Controller {
         if (array_key_exists('category', $data)) {
             $c->category_id = $data['category'];
         }
-        /**
-        if(array_key_exists('send_greeting', $data)) {
-            $c->send_greeting = $data['send_greeting'];
+
+        if (array_key_exists('help_text', $data)) {
+            $c->help_text = $data['help_text'];
         }
-         * 
-         */
     }
 
 }

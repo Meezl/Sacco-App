@@ -9,6 +9,11 @@ Register New Admin
 @stop
 
 @section('inner-content')
+<ul class="nav nav-pills">
+    <li><a href="{{ action('UserController@getIndex') }}">Users</a></li>
+    <li class="active"><a href="{{ action('UserController@getRegister') }}">New</a></li>
+</ul>
+<br />
 <form method="post" action="{{ action('UserController@postRegister') }}">
     {!! Form::token() !!}
     <div class="row">
