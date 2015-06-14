@@ -42,7 +42,7 @@ New Campaign
         <label>Associated Category</label>
         <select name="category" class="form-control">
             <option value="-1">None. Manually Select Contacts</option>
-            <option {{ 0 === $campaign->category_id?'selected':'' }} value="0">None. Send To Everyone</option>
+            <option {{ ((!is_null($campaign->category_id))&& $campaign->category_id == 0 )?'selected':'' }} value="0">None. Send To Everyone</option>
             @foreach(App\Models\Category::all() as $cat)
             <option value="{{ $cat->id }}" {{ $cat->id == $campaign->category_id?'selected':'' }}  >{{ $cat->title }}</option>
             @endforeach

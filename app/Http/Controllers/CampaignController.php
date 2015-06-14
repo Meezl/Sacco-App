@@ -42,11 +42,11 @@ class CampaignController extends Controller {
             \Session::flash('error', 'Please Correct The Higlighted Errors');
             return view('campaigns.new', compact('campaign'))->withErrors($validator->messages());
         }
-
+        
         //manual
-        if ($data['category'] == -1) {
+        if ($data['category'] === -1) {
             $campaign->category_id = null;
-        } elseif ($data['category'] === 0) {
+        } elseif ($data['category'] == 0) {
             //send to all. intentionaly left blank
         } else {
             $cat = Category::find($data['category']);
@@ -69,7 +69,7 @@ class CampaignController extends Controller {
 
         //select contacts that will be associated with this campaign
         //add everyone
-        if ($campaign->category_id === 0) {
+        if ($campaign->category_id == 0) {
             $contacts = Contact::lists('id');
         }
         //add from category
@@ -79,7 +79,7 @@ class CampaignController extends Controller {
 
         //prevent duplicate insertion
         $existing = $campaign->contacts()->lists('id');                
-        if (!is_null($contacts)  && count($contacts)) {
+        if (!empty($contacts)  && count($contacts)) {
             $data = [];
             foreach ($contacts as $id) {
                 if (array_search($id, $existing) !== false) {continue;}
