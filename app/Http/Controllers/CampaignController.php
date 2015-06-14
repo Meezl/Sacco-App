@@ -30,7 +30,8 @@ class CampaignController extends Controller {
             'description' => 'required',
             'message' => 'required|max:900',
             'possible_responses' => 'required|integer|between:0,26',
-            'category' => 'required|integer'
+            'category' => 'required|integer',
+            'send_greeting' => 'required|in:0,1'
         );
 
         $data = \Input::all();
@@ -68,28 +69,27 @@ class CampaignController extends Controller {
 
         //select contacts that will be associated with this campaign
         //add everyone
-        if ($campaign->category === 0) {
+        if ($campaign->category_id === 0) {
             $contacts = Contact::lists('id');
         }
         //add from category
-        elseif ($campaign->category) {
+        elseif ($campaign->category_id) {
             $contacts = $cat->contacts()->lists('id');
         }
 
         //prevent duplicate insertion
-        $existing = $campaign->contacts()->lists('id');
-        if (count($contacts)) {
+        $existing = $campaign->contacts()->lists('id');                
+        if (!is_null($contacts)  && count($contacts)) {
             $data = [];
-            foreach ($contacts as $c) {
-                if (array_search($c, $existing) !== false) {
-                    continue;
-                }
+            foreach ($contacts as $id) {
+                if (array_search($id, $existing) !== false) {continue;}
                 $data[] = array(
-                    'contact_id' => $c->id,
+                    'contact_id' => $id,
                     'campaign_id' => $campaign->id
                 );
-                \DB::table('Campaign_contacts')->insert($data);
             }
+            
+            \DB::table(Campaign::TABLE_CAMPAIGN_CONTACTS)->insert($data);
         }
         if ($campaign->possible_responses) {
             return \Redirect::action('CampaignController@getAnswers', [$campaign->id]);
@@ -108,7 +108,7 @@ class CampaignController extends Controller {
         $existing = $campaign->answers()->count();
 
         if ($existing == $campaign->possible_responses) {
-            \Session::error('error', 'You cannot add any more possible responses. click the back button at the bottom to adjust this');
+            \Session::error('error', 'You cannot add any more possible responses. click the back button at the bottom to adjust possible responses setting');
             return view('campaigns.add-answers', compact('campaign'));
         }
 
@@ -259,9 +259,18 @@ class CampaignController extends Controller {
     }
     
     public function getIndex() {
-        $campaigns = Campaign::paginate(self::CAMPAIGNS_PER_PAGE)
+        $campaigns = Campaign::whereNull('deleted_at')
+                ->paginate(self::CAMPAIGNS_PER_PAGE)
                 ->setPath(\URL::current());
         return view('campaigns.index', compact('campaigns'));
+    }
+    
+    public function getDelete($id) {
+        $campaign = $this->retrieve($id);
+        $campaign->deleted_at = date('Y-m-d H:i:s');
+        $campaign->save();
+        \Session::flash('success', $campaign->title.' Successfuly Deleted');
+        return \Redirect::action('CampaignController@getIndex');
     }
 
     private function map(array $data, Campaign $c) {
@@ -280,6 +289,10 @@ class CampaignController extends Controller {
 
         if (array_key_exists('category', $data)) {
             $c->category_id = $data['category'];
+        }
+        
+        if(array_key_exists('send_greeting', $data)) {
+            $c->send_greeting = $data['send_greeting'];
         }
     }
 

@@ -13,6 +13,12 @@
 @stop
 
 @section('inner-content')
+<ul class="nav nav-pills">
+    <li><a href="{{ action('ContactController@getIndex')}}">Contacts</a></li>
+    <li><a href="{{ action('CategoryController@getIndex') }}">Categories</a></li>
+    <li><a href="{{ action('ContactController@getNew') }}">New Contact</a></li>
+</ul>
+<br />
 <form id="category-form-new" method="post" action="{{ action('CategoryController@postNew', [$category->id]) }}" class="form">
     {!! Form::token() !!}
     <div class="form-group">

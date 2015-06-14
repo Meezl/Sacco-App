@@ -23,7 +23,7 @@
                     <span>Campaigns</span>
                 </a>
                 <ul class="sub">
-                    <li><a href="">All</a></li>
+                    <li><a href="{{ action('CampaignController@getIndex') }}">All</a></li>
                     <li><a href="{{ action('CampaignController@getNew') }}">Create New</a></li>
                     <li><a href="">Trash</a></li>
                 </ul>

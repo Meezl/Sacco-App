@@ -9,6 +9,13 @@ All Contacts
 @stop
 
 @section('inner-content')
+<p class="small">These are the contacts of your members</p>
+<ul class="nav nav-pills">
+    <li><a href="{{ action('ContactController@getNew')}}">New Contact</a></li>
+    <li><a href="{{ action('CategoryController@getIndex') }}">Categories</a></li>
+    <li><a href="{{ action('CategoryController@getNew') }}">New Category</a></li>
+</ul>
+<br />
 <table class="table table-striped table-hover table-bordered">
     <thead>
         <tr>

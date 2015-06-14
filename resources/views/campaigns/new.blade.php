@@ -50,6 +50,17 @@ New Campaign
         {!! $errors->first('category', '<p class="text-danger small">:message</p>') !!}
         <p class="help-block small">You can decide to send texts to only contacts in a given group</p>
     </div>
+    <div class="form-group">        
+        <p>Send Greeting?</p>
+        <label>
+            <input type="radio" name="send_greeting" value="1" {{ $campaign->send_greeting?'checked':'' }} /> Yes
+        </label>
+        <br />
+        <label>
+            <input type="radio" name="send_greeting" value="0" {{ !$campaign->send_greeting?'checked':'' }} /> No
+        </label>
+        <p class="help-block small">e.g Hello Juma</p>
+    </div>
     <button class="btn btn-success pull-right">Save</button>
     <div class="clearfix"></div>
 </form>

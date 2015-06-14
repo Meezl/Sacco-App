@@ -12,10 +12,12 @@ Contact Categories
 <p class="small">
     Contact Categories help you organize your contacts into groups then associate a campaign to only a subset of your contacts instead of bothering everyone
 </p>
-<p>
-    <a class="btn btn-default tooltips" href="{{ action('CategoryController@getNew') }}" title="Create a new Category" data-toggle="tooltip" data-placement="bottom">New</a>
-</p>
-
+<ul class="nav nav-pills">
+    <li><a href="{{ action('ContactController@getNew')}}">New Contact</a></li>
+    <li><a href="{{ action('ContactController@getIndex') }}">Contacts</a></li>
+    <li><a href="{{ action('CategoryController@getNew') }}">New Category</a></li>
+</ul>
+<br />
 <table class="table table-striped table-bordered table-hover">
     <thead>
         <tr>

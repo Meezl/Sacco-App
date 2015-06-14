@@ -13,6 +13,13 @@ New Contact
 @stop
 
 @section('inner-content')
+<ul class="nav nav-pills">
+    <li><a href="{{ action('ContactController@getIndex')}}">Contacts</a></li>
+    <li><a href="{{ action('CategoryController@getIndex') }}">Categories</a></li>
+    <li><a href="{{ action('CategoryController@getNew') }}">New Category</a></li>
+</ul>
+<br />
+
 @if(Session::has('contact-duplicate'))
 <p class="alert alert-info">You can view that contact <a href="{{ Session::get('contact-duplicate') }}">here</a></p>
 @endif

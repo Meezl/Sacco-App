@@ -13,6 +13,17 @@ class Campaign extends \Eloquent {
     private $myContacts;
     private $totalContacts;
 
+    const EXCERPT_LENGTH = 70;
+    
+    const TABLE_CAMPAIGN_CONTACTS = 'campaign_contacts';
+
+    public function getExcerpt() {
+        if (strlen($this->description) > 50) {
+            return substr($this->description, 0, self::EXCERPT_LENGTH) . '...';
+        }
+        return $this->description;
+    }
+
     public function getIdString() {
         if ($this->id) {
             return sprintf('A%04d', $this->id);
@@ -39,7 +50,7 @@ class Campaign extends \Eloquent {
     }
 
     public function contacts() {
-        return $this->belongsToMany('App\Models\Contact', 'campaign_contacts');
+        return $this->belongsToMany('App\Models\Contact', self::TABLE_CAMPAIGN_CONTACTS);
     }
 
     public function getContacts() {
@@ -53,9 +64,9 @@ class Campaign extends \Eloquent {
         if (!$this->id) {
             return null;
         }
-        $format = "Reply for free to this sms in the format: EGERS %s %s";
+        $format = "Reply for free to this sms in the format EGERS %s %s";
         if ($this->possible_responses) {
-            return sprintf($format, $this->getIdString(), 'A');
+            return sprintf($format, $this->getIdString(), 'A where A is your reply');
         } else {
             return sprintf($format, $this->getIdString(), 'reply');
         }
@@ -91,6 +102,10 @@ class Campaign extends \Eloquent {
      */
     public function getLengthStats($withHelp = true) {
         $sms = $this->getSms($withHelp);
+        
+        if($this->send_greeting) {
+            $sms = "Hello userlastName\n". $sms;
+        }
         if (is_null($this->totalContacts)) {
             $this->totalContacts = $this->contacts()->count();
         }

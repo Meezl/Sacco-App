@@ -15,7 +15,7 @@
             <div class="fa fa-bars tooltips" data-placement="bottom" data-original-title="Toggle Navigation"></div>
         </div>
 
-        <a href="" class="logo"><b>Egerton Sacco</b></a>
+        <a href="{{ url('/') }}" class="logo"><b>Egerton Sacco</b></a>
 
         <div class="nav notify-row" id="top_menu">
             <ul class="nav top-menu">
@@ -75,6 +75,15 @@
 
 
 </section>
+
+<footer class="text-center">
+    <p>
+        Egerton Sacco SMS Survey System &copy; {{ date('Y') }}
+    </p>
+    <p>
+        For technical support contact <a href="mailto:jameskmw48@gmail.com">jameskmw48@gmail.com</a> or <a href="mailto:hashim4580@gmail.com ">hashim4580@gmail.com</a>
+    </p>
+</footer>
 @stop
 
 @section('scripts')
