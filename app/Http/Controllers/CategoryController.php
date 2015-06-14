@@ -72,6 +72,8 @@ class CategoryController extends Controller {
         $existing = $cat->contacts()->lists('id');
         if (count($existing)) {
             $contacts = Contact::whereNotIn('id', $existing)
+                    ->orderBy('first_name')
+                    ->orderBy('last_name')
                     ->paginate(self::CONTACTS_PER_PAGE)
                     ->setPath(\URL::current());
         } else {

@@ -10,37 +10,31 @@ Overview of {{ $campaign->title }}
 
 @section('inner-content')
 <p>
-    Number of users that will be contacted: {{ $help->users }}
+    Number of users that will be contacted: {{ $text->users }}
 </p>
-<div class="row">
-    <div class="col-sm-6">
-        <h2>With Help Block</h2>
-        <ul>
-            <li><b>Length: </b>{{ $help->length }}</li>
-            <li><b>Cost per Sms: </b>{{ $help->cost }}</li>
-            <li><b>Total Cost: </b>{{ $help->total }}</li>
-        </ul>
-        <div class="well well-lg">
-            {!! nl2br(htmlentities($help->sms)) !!}  
-        </div>
-    </div>
-    <div class="col-sm-6">
-        <h2>Without Help Block</h2>
-        <ul>
-            <li><b>Length: </b>{{ $plain->length }}</li>
-            <li><b>Cost per Sms: </b>{{ $plain->cost }}</li>
-            <li><b>Total Cost: </b>{{ $plain->total }}</li>
-        </ul>
-        <div class="well well-lg">
-            {!! nl2br(htmlentities($plain->sms)) !!}      
-        </div>
-    </div>
-</div>
-<br/>
-<p class="text-center">
-    <a href="{{ action('CampaignController@getNew', [$campaign->id]) }}" class="btn btn-primary">&larr; Edit</a>    
-    <a href="" class="btn btn-success">Send With Help Block</a>
-    <a href="" class="btn btn-success">Send Without Help Block</a>
+<h2>Summary</h2>
+<ul>
+    <li><b>Length: </b>{{ $text->length }}</li>
+    <li><b>Cost per Sms: </b>{{ $text->cost }}</li>
+    <li><b>Total Cost: </b>{{ $text->total }}</li>
+    @if($campaign->help_text)
+    <li><b>Contains Help Text</b></li>
+    @else
+        <li><b>No Help Text</b></li>
+    @endif
     
-</p>
+</ul>
+<div class="well well-lg">
+    {!! nl2br(htmlentities($text->sms)) !!}  
+</div>
+
+<br/>
+
+    <a href="{{ action('CampaignController@getContacts', [$campaign->id]) }}" class="btn btn-default pull-left">&larr; Edit</a>    
+<div class="clearfix"></div>
+<br />
+
+<form class="text-center" method="post" action="{{ action('CampaignController@postSend', [$campaign->id]) }}">
+    <button type="submit" class="btn btn-success tooltips" data-toggle="tooltip" title="There is no going back">Send</button>
+</form>
 @stop

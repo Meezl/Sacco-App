@@ -35,7 +35,7 @@ class MessageHelper {
             $resp->campaign_id = $campaign->id;
             //correct response. one character only
             if ($campaign->possible_responses && count($parts) == 2 && strlen($parts[1]) == 1) {
-                $resp->text = $parts[1];
+                $resp->text = strtoupper($parts[1]);
             } else {
                 $resp->text = implode(' ', array_slice($parts, 1));
             }
@@ -62,9 +62,9 @@ class MessageHelper {
         if (count($contacts) == 0) {
             throw new \Exception("Message Receiver not specified");
         }
-        $gateway = $this->getGateway();
+        $gateway = self::getGateway();
         $from = config('sms.system_number');
-        
+
         $results = $gateway->sendMessage(implode(',', $contacts), $message, $from);
         $status = [];
         foreach ($results as $result) {
@@ -79,20 +79,39 @@ class MessageHelper {
         return $status;
     }
 
+    public static function sendRaw($contact, $message) {
+        $statuses = self::sendFromSystem([$contact], $message);
+        return $statuses[0];
+    }
+
     /**
      * Send
      * @param Message $msg
      */
     public static function send(Message $msg) {
-        $this->sendFromSystem([$msg->receiver], $msg->text);
+        $statuses = self::sendFromSystem([$msg->receiver], $msg->text);
+        return $statuses[0];
     }
 
     /**
      * sms gateway
      * @return \AfricasTalkingGateway
      */
-    private function getGateway() {
+    private static function getGateway() {
         return new \AfricasTalkingGateway(config('sms.api_username'), config('sms.api_key'));
+    }
+
+    /**
+     * Map api status to messsage
+     * @param array $status
+     * @param Message $msg
+     */
+    public static function map(array $status, Message $msg) {
+        $msg->api_id = $status['api_id'];
+        $msg->sender = $status['sender'];
+        $msg->receiver = $status['receiver'];
+        $msg->status = $status['status'];
+        $msg->cost = $status['cost'];
     }
 
 }

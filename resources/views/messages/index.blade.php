@@ -29,7 +29,7 @@ Inbox
             <td>{{ $i + 1 }}</td>
             <td>{{ $messages[$i]->sender }}</td>
             <td>
-                <h5>Message: {{ $messages[$i]->text }}</h5>
+                <h5>Message: {!! nl2br(htmlentities($messages[$i]->text)) !!}</h5>
                 received: {{ $messages[$i]->created_at }}
             </td>
         </tr>

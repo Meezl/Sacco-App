@@ -55,19 +55,19 @@ New Campaign
         {!! $errors->first('category', '<p class="text-danger small">:message</p>') !!}
         <p class="help-block small">You can decide to send texts to only contacts in a given group</p>
     </div>
-    <!--
+    
     <div class="form-group">        
-        <p>Send Greeting?</p>
+        <p>Send Help Text?</p>
         <label>
-            <input type="radio" name="send_greeting" value="1" {{ $campaign->send_greeting?'checked':'' }} /> Yes
+            <input type="radio" name="help_text" value="1" {{ $campaign->help_text?'checked':'' }} /> Yes
         </label>
         <br />
         <label>
-            <input type="radio" name="send_greeting" value="0" {{ !$campaign->send_greeting?'checked':'' }} /> No
+            <input type="radio" name="help_text" value="0" {{ !$campaign->help_text?'checked':'' }} /> No
         </label>
-        <p class="help-block small">e.g Hello Juma</p>
-    </div>
-    -->
+        <p class="help-block small">e.g Reply for free to {{ Config::get('sms.system_number') }} in the format <b>EGERS A0005 A</b> where A is your reply </p>
+           {!! $errors->first('help_text', '<p class="text-danger small">:message</p>') !!}
+    </div>    
     <button class="btn btn-success pull-right">Save</button>
     <div class="clearfix"></div>    
 </form>
