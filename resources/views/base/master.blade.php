@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title') -Egerton Sacco</title>
 
-    <!-- Bootstrap -->
+    <link rel="stylesheet" href="{{asset('assets/font-awesome/css/font-awesome.css')}}" type="text/css" />
     <link href="{{ asset('assets/css/bootstrap.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
     @yield('styles')
