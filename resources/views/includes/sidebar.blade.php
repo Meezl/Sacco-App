@@ -25,7 +25,9 @@
                 <ul class="sub">
                     <li><a href="{{ action('CampaignController@getIndex') }}">All</a></li>
                     <li><a href="{{ action('CampaignController@getNew') }}">Create New</a></li>
+                    <!--
                     <li><a href="">Trash</a></li>
+                    -->
                 </ul>
             </li>
             <li class="sub-menu">
@@ -34,9 +36,8 @@
                     <span>Messages</span>
                 </a>
                 <ul class="sub">
-                    <li><a href="">Inbox</a></li>
-                    <li><a href="">Sent</a></li>
-                    <li><a href="">Trash</a></li>
+                    <li><a href="{{ action('MessageController@getIndex') }}">Inbox</a></li>
+                    <li><a href="{{ action('MessageController@getOutbox') }}">Sent</a></li>
                 </ul>
             </li>
             <li class="sub-menu">

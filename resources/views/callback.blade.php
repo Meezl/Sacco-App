@@ -5,7 +5,7 @@ Test URL Callback
 @stop
 
 @section('content')
-<form method="post" action="#" class="form" style="max-width: 400px">
+<form method="post" action="{{ action('MessageController@postHandleCallback') }}" class="form" style="max-width: 400px">
     <input type="hidden" name="from" value="+254734741807" />
     <input type="hidden" name="to" value="20880" />
     <input type="hidden" name="text" value="A0003 i do not know" />

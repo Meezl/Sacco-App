@@ -25,7 +25,7 @@ class MessageHelper {
         if (count($parts) == 0) {
             return null;
         }
-                
+
         if (preg_match('/A[0-9]{4,}/i', $parts[0])) {
             $campaign = Campaign::find(substr($parts[0], 1));
             if (is_null($campaign)) {
@@ -37,9 +37,9 @@ class MessageHelper {
             if ($campaign->possible_responses && count($parts) == 2 && strlen($parts[1]) == 1) {
                 $resp->text = $parts[1];
             } else {
-               $resp->text = implode(' ', array_slice($parts, 1));
+                $resp->text = implode(' ', array_slice($parts, 1));
             }
-            
+
             $resp->message_id = $msg->id;
             return $resp;
         }
@@ -50,10 +50,33 @@ class MessageHelper {
     /**
      * Send outbound messages
      * @throws Exception 
-     * @param \Traversable $messages
+     * @param array $contacts
+     * @param string $message
+     * @return array $status
      */
-    public static function sendFromSystem(\Traversable $messages) {
+    public static function sendFromSystem(array $contacts, $message) {
+        if (is_null($message) || strlen($message) == 0) {
+            throw new \Exception('you cannot send an empty message');
+        }
+
+        if (count($contacts) == 0) {
+            throw new \Exception("Message Receiver not specified");
+        }
+        $gateway = $this->getGateway();
+        $from = config('sms.system_number');
         
+        $results = $gateway->sendMessage(implode(',', $contacts), $message, $from);
+        $status = [];
+        foreach ($results as $result) {
+            $status[] = array(
+                'receiver' => $result->number,
+                'sender' => $from,
+                'status' => $result->status,
+                'api_id' => $result->messageId,
+                'cost' => $result->cost
+            );
+        }
+        return $status;
     }
 
     /**
@@ -61,7 +84,15 @@ class MessageHelper {
      * @param Message $msg
      */
     public static function send(Message $msg) {
-        $this->sendFromSystem([$msg]);
+        $this->sendFromSystem([$msg->receiver], $msg->text);
+    }
+
+    /**
+     * sms gateway
+     * @return \AfricasTalkingGateway
+     */
+    private function getGateway() {
+        return new \AfricasTalkingGateway(config('sms.api_username'), config('sms.api_key'));
     }
 
 }

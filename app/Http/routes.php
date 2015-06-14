@@ -35,27 +35,13 @@ Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function() {
     Route::controller('category', 'CategoryController');
 
     Route::controller('campaign', 'CampaignController');
+    
+    Route::controller('message', 'MessageController');
 });
 
 
 Route::controller('auth', 'Auth\AuthController');
 
 Route::get('test', function() {
-    $gateway = new AfricasTalkingGateway(config('sms.api_username'), config('sms.api_key'));
-    $recepient = '+254705813955,+254734741807';
-    $message = 'Testing Server config';
-    $from = config('sms.system_number');
-    try {
-        $results = $gateway->sendMessage($recepient, $message, $from);
-        foreach ($results as $result) {
-            echo ' Number: ' . $result->number;
-            echo ' Status: ' . $result->status;
-            echo ' MessageId: ' . $result->messageId;
-            echo ' Cost: ' . $result->cost . '\n';
-        }
-        echo '<br />success';
-    } catch (AfricasTalkingGatewayException $e) {
-        echo $e->getMessage();
-    }
-    return 'done';
+    return view('callback');
 });

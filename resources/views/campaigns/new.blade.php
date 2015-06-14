@@ -13,6 +13,11 @@ New Campaign
 @stop
 
 @section('inner-content')
+<p>
+    <a href="{{ action('CampaignController@getIndex') }}" class="btn btn-default">Campaigns</a>
+</p>
+<br />
+
 <form id="campaign-form-new" method="post" action="{{ action('CampaignController@postNew', [$campaign->id]) }}" class="form">
     {!! Form::token() !!}
     <div class="form-group">
@@ -50,6 +55,7 @@ New Campaign
         {!! $errors->first('category', '<p class="text-danger small">:message</p>') !!}
         <p class="help-block small">You can decide to send texts to only contacts in a given group</p>
     </div>
+    <!--
     <div class="form-group">        
         <p>Send Greeting?</p>
         <label>
@@ -61,7 +67,8 @@ New Campaign
         </label>
         <p class="help-block small">e.g Hello Juma</p>
     </div>
+    -->
     <button class="btn btn-success pull-right">Save</button>
-    <div class="clearfix"></div>
+    <div class="clearfix"></div>    
 </form>
 @stop

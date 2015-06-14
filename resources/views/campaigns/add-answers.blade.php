@@ -10,6 +10,11 @@ Add possible responses to {{ $campaign->title }}
 
 @section('inner-content')
 <p>
+    <a href="{{ action('CampaignController@getIndex') }}" class="btn btn-default">Campaigns</a>
+</p>
+<br />
+
+<p>
     Total Responses required: {{ $campaign->possible_responses }}
 </p>
 <div class="row">
