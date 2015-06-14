@@ -1,3 +1,44 @@
 .alert.alert-dismissable {
     margin-top: 20px;
 }
+
+.form{
+    background: #fff;
+    border-radius: 5px;
+    margin: 20px auto;
+    padding: 20px;
+}
+
+#contact-new-form {    
+    max-width: 400px;
+}
+
+#category-form-new{
+    max-width: 600px;
+}
+
+#category-form-new textarea {
+    height: 200px;
+}
+
+#campaign-form-new,
+#answers-form-new{
+    max-width: 700px;
+}
+
+.btn.btn-xs {
+    margin: 5px 0;
+}
+
+.img-responsive{
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.nav.nav-pills {
+    margin: 20px;
+}
+
+footer {
+    padding: 50px 0;
+}

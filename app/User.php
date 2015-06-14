@@ -1,4 +1,6 @@
-<?php namespace App;
+<?php
+
+namespace App;
 
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
@@ -8,27 +10,60 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract {
 
-	use Authenticatable, CanResetPassword;
+    use Authenticatable,
+        CanResetPassword;
 
-	/**
-	 * The database table used by the model.
-	 *
-	 * @var string
-	 */
-	protected $table = 'users';
+    /**
+     * The database table used by the model.
+     *
+     * @var string
+     */
+    protected $table = 'users';
 
-	/**
-	 * The attributes that are mass assignable.
-	 *
-	 * @var array
-	 */
-	protected $fillable = ['name', 'email', 'password'];
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = ['name', 'email', 'password'];
 
-	/**
-	 * The attributes excluded from the model's JSON form.
-	 *
-	 * @var array
-	 */
-	protected $hidden = ['password', 'remember_token'];
+    /**
+     * The attributes excluded from the model's JSON form.
+     *
+     * @var array
+     */
+    protected $hidden = ['password', 'remember_token'];
+
+    /**
+     * User Profile Photo
+     * @var App\Model\Image
+     */
+    private $avatar = false;
+
+    public function getFullName() {
+        return $this->first_name . ' ' . $this->last_name;
+    }
+
+    public function images() {
+        return $this->hasMany('App\Models\Image');
+    }
+
+    /**
+     * Get User Profile Image
+     * @return App\Models\Image profile image
+     */
+    public function getAvatar() {
+        if ($this->avatar === false) {
+            if ($this->image_id) {
+                $this->avatar = $this->images()
+                        ->where('id', '=', $this->image_id)
+                        ->first();
+            }
+            else {
+                return null;
+            }
+        }
+        return $this->avatar;
+    }
 
 }
