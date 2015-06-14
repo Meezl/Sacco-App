@@ -24,14 +24,16 @@ class CampaignController extends Controller {
 
     public function postNew($id = null) {
         $campaign = $this->retrieve($id);
-
+        
+        //implement greeting later
+        $campaign->send_greeting = 0;
+        
         $rules = array(
             'title' => 'required|max:200',
             'description' => 'required',
             'message' => 'required|max:900',
             'possible_responses' => 'required|integer|between:0,26',
-            'category' => 'required|integer',
-            'send_greeting' => 'required|in:0,1'
+            'category' => 'required|integer'
         );
 
         $data = \Input::all();
@@ -290,10 +292,12 @@ class CampaignController extends Controller {
         if (array_key_exists('category', $data)) {
             $c->category_id = $data['category'];
         }
-        
+        /**
         if(array_key_exists('send_greeting', $data)) {
             $c->send_greeting = $data['send_greeting'];
         }
+         * 
+         */
     }
 
 }

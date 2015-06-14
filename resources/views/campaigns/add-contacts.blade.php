@@ -9,6 +9,11 @@ Add Contacts to {{$campaign->title}}
 @stop
 
 @section('inner-content')
+<p>
+    <a href="{{ action('CampaignController@getIndex') }}" class="btn btn-default">Campaigns</a>
+</p>
+<br />
+
 <p class="small">Showing only contacts not already added</p>
 <ul class="nav nav-pills">
     <li><a href="{{ action('CampaignController@getContacts', [$campaign->id]) }}" class="tooltips" data-toggle="tooltip" title="Contacts Already Added to this campaign">Campaign Contacts</a></li>

@@ -7,7 +7,8 @@ use App\Models\Message;
  *
  * @author jameskmb
  */
-class MessageController {
+class MessageController extends Controller{
+    const MESSAGES_PER_PAGE = 20;
     
     /**
      * Handle Incoming messages from urlCallback
@@ -25,6 +26,23 @@ class MessageController {
         if ($response) {
             $response->save();
         }
+    }
+    
+    //get inbox
+    public function getIndex() {
+        $messages = Message::where('sender', '<>', config('sms.system_number'))
+                ->orderBy('created_at', 'desc')
+                ->paginate(self::MESSAGES_PER_PAGE)
+                ->setPath(\URL::current());
+        return view('messages.index', compact('messages'));
+    }
+    
+    public function getOutbox() {
+        $messages = Message::where('sender', '=', config('sms.system_number'))
+                ->orderBy('created_at', 'desc')
+                ->paginate(self::MESSAGES_PER_PAGE)
+                ->setPath(\URL::current());
+        return view('messages.outbox', compact('messages'));
     }
 
 }
