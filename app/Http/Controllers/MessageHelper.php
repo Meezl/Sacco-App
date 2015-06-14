@@ -26,7 +26,7 @@ class MessageHelper {
             return null;
         }
 
-        if (preg_match('/A[0-9]{4,}/i', $parts[0])) {
+        if (preg_match('/X[0-9]{4,}/i', $parts[0])) {
             $campaign = Campaign::find(substr($parts[0], 1));
             if (is_null($campaign)) {
                 return null;

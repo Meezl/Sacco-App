@@ -8,11 +8,10 @@ Login
 
 <div id="page-login">
     <div class="container">
-        @if(Session::has('error'))
-        <p class="alert alert-danger alert-dismissable text-center">{{ Session::get('error') }}</p>
-        @endif
+        @include('includes.flash-messages')
         <form method="post" action="{{ url('auth/login') }}" class="form-login">
             {!! Form::token() !!}
+            <img src="{{ asset('img/logo.png') }}" alt="Egerton Sacco" class="img-responsive" />
             <h2 class="form-login-heading">sign in now</h2>
             <div class="login-wrap">
                 <input autocomplete="off" value="{{ $email or '' }}" name="email" type="email" autofocus="" placeholder="User ID" class="form-control">
@@ -24,7 +23,7 @@ Login
                 <label><input type="checkbox" name="remember" /> Remember me</label>
                 <label class="checkbox">
                     <span class="pull-right">
-                        <a href="#forgotPass" data-toggle="modal"> Forgot Password?</a>
+                        <a id="forgot" href="{{ action('Auth\AuthController@getReset') }}" data-toggle="modal"> Forgot Password?</a>
 
                     </span>
                 </label>
@@ -33,7 +32,7 @@ Login
             </div>
         </form>
         
-        <form method="" action="">
+        <form method="post" action="{{ action('Auth\AuthController@getReset') }}">
              <!-- Modal -->
             <div class="modal fade" id="forgotPass" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
@@ -65,6 +64,7 @@ Login
 <script>
     (function($) {
         $.backstretch("{{ asset('assets/img/dark-offices.jpg') }}", {speed: 500});
+        $('#forgot').attr('href', '#forgotPass');
     }(jQuery));
 </script>
 @stop

@@ -65,7 +65,7 @@ New Campaign
         <label>
             <input type="radio" name="help_text" value="0" {{ !$campaign->help_text?'checked':'' }} /> No
         </label>
-        <p class="help-block small">e.g Reply for free to {{ Config::get('sms.system_number') }} in the format <b>EGERS A0005 A</b> where A is your reply </p>
+        <p class="help-block small">e.g Reply for free to {{ Config::get('sms.system_number') }} in the format( <b>EGERS X0005 A</b> )where A is your reply </p>
            {!! $errors->first('help_text', '<p class="text-danger small">:message</p>') !!}
     </div>    
     <button class="btn btn-success pull-right">Save</button>

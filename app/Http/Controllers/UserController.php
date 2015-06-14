@@ -55,6 +55,10 @@ class UserController extends Controller {
     }
 
     public function getRegister() {
+        if(!\Auth::user()->is_admin) {
+            \Session::flash('error', 'Whoops! Looks like you do not have the permission to create new users');
+            return \Redirect::action('UserController@getIndex');
+        }
         $user = new User();
         return view('users.register', compact('user'));
     }
@@ -104,6 +108,7 @@ class UserController extends Controller {
             $msg = new Message();
             $msg->text = $text;
             MessageHelper::map($status, $msg);
+            $msg->deleted_at = date('Y-m-d H:i:s'); //hide
             $msg->save();
         }
     }
