@@ -24,28 +24,10 @@
         <a href="{{ url('/') }}" class="logo"><b>Egerton Sacco</b></a>
 
         <div class="nav notify-row" id="top_menu">
-            <ul class="nav top-menu">
-                <li class="dropdown">
-                    <a data-toggle="dropdown" class="dropdown-toggle" href="">
-                        <i class="fa fa-tasks"></i>
-                        <span class="badge bg-theme">2</span>
-                    </a>
-                    <ul class="dropdown-menu extended tasks-bar">
-                        <div class="notify-arrow notify-arrow-green"></div>
-                        <li>
-                            <p class="green">You Have 2 pending Tasks</p>
-                        </li>
-                        <li><a href="">Task 1</a></li>
-                        <li><a href="">Task 2</a></li>
-                        <li class="external">
-                            <a href="">See All Tasks</a>
-                        </li>
-                    </ul>
-                </li>
+            <ul class="nav top-menu">                
                 <li id="header_inbox_bar" class="dropdown">
-                    <a class="dropdown-toggle" href="">
+                    <a class="dropdown-toggle" href="{{ action('MessageController@getIndex') }}">
                         <i class="fa fa-envelope-o"></i>
-                        <span id="msg-count" class="badge bg-theme">2</span>
                     </a>                    
                 </li>
             </ul>
@@ -53,7 +35,7 @@
 
         <div class="top-menu">
             <ul class="nav pull-right top-menu">
-                <li><a href="" style="margin-top: 15px">Help</a></li>
+                <li><a class="tooltips" title="Coming Soon" data-toggle="tooltip" data-placement="bottom" href="#" style="margin-top: 15px">Help</a></li>
                 <li><a class="logout" href="{{ action('Auth\AuthController@getLogout') }}">Logout</a></li>
             </ul>
         </div>
