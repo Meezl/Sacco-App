@@ -44,7 +44,7 @@ class CampaignController extends Controller {
         }
         
         //manual
-        if ($data['category'] === -1) {
+        if ($data['category'] == -1) {
             $campaign->category_id = null;
         } elseif ($data['category'] == 0) {
             //send to all. intentionaly left blank
@@ -69,7 +69,7 @@ class CampaignController extends Controller {
 
         //select contacts that will be associated with this campaign
         //add everyone
-        if ($campaign->category_id == 0) {
+        if (!is_null($campaign->category_id) && $campaign->category_id  == 0) {
             $contacts = Contact::lists('id');
         }
         //add from category
