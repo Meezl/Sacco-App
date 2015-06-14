@@ -26,7 +26,7 @@ class Campaign extends \Eloquent {
 
     public function getIdString() {
         if ($this->id) {
-            return sprintf('A%04d', $this->id);
+            return sprintf('X%04d', $this->id);
         }
         return null;
     }
@@ -65,11 +65,11 @@ class Campaign extends \Eloquent {
             return null;
         }
         $number = config('sms.system_number');
-        $format = "Reply for free to $number in the format EGERS %s %s";
+        $format = "Reply for free to $number in the format( EGERS %s %s ";
         if ($this->possible_responses) {
-            return sprintf($format, $this->getIdString(), 'A where A is your reply');
+            return sprintf($format, $this->getIdString(), 'A )where A is your reply');
         } else {
-            return sprintf($format, $this->getIdString(), 'reply');
+            return sprintf($format, $this->getIdString(), 'reply )');
         }
     }
 

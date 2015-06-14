@@ -295,6 +295,7 @@ class CampaignController extends Controller {
 
     public function getIndex() {
         $campaigns = Campaign::whereNull('deleted_at')
+                ->orderBy('created_at', 'desc')
                 ->paginate(self::CAMPAIGNS_PER_PAGE)
                 ->setPath(\URL::current());
         return view('campaigns.index', compact('campaigns'));

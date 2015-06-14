@@ -42,3 +42,41 @@
 footer {
     padding: 50px 0;
 }
+
+.form-login {
+    max-width: 650px;
+}
+
+.form-login h2.form-login-heading {
+    background: #3d7f61;
+    border-radius: 0;
+}
+.modal-header {
+    background: #3d7f61;
+}
+
+.btn-theme {
+    background: #3d7f61;
+}
+
+#sidebar{
+    background: #3D7F61;
+}
+
+ul.sidebar-menu li a {
+    color: #fff;
+}
+/**
+.black-bg {
+    background: #06a096;
+    border-bottom: 1px solid;
+    color: #fff;
+}
+**/
+#sidebar .sub > li {
+    background: #51a07b ;
+}
+
+ul.sidebar-menu li ul.sub li a {
+    color: #dfdfdf;
+}

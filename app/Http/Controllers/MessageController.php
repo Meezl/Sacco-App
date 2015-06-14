@@ -31,6 +31,7 @@ class MessageController extends Controller{
     //get inbox
     public function getIndex() {
         $messages = Message::where('sender', '<>', config('sms.system_number'))
+                ->whereNull('deleted_at')
                 ->orderBy('created_at', 'desc')
                 ->paginate(self::MESSAGES_PER_PAGE)
                 ->setPath(\URL::current());
@@ -39,6 +40,7 @@ class MessageController extends Controller{
     
     public function getOutbox() {
         $messages = Message::where('sender', '=', config('sms.system_number'))
+                ->whereNull('deleted_at')
                 ->orderBy('created_at', 'desc')
                 ->paginate(self::MESSAGES_PER_PAGE)
                 ->setPath(\URL::current());
