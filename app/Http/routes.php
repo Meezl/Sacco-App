@@ -19,6 +19,8 @@ Route::get('/', function() {
     return redirect('dashboard');
 });
 
+Route::post('callback', 'MessageController@postHandleCallback');
+
 
 Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function() {
 
@@ -39,15 +41,21 @@ Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function() {
 Route::controller('auth', 'Auth\AuthController');
 
 Route::get('test', function() {
-   return view('callback');
-});
-
-Route::post('test', function() {
-    $file = public_path().'/data.json';
-    $handle = fopen($file, 'a');
-    
-    $data = $_POST;
-    fwrite($handle, json_encode($data));
-    \Debugbar::info(compact('data'));    
-    return view('callback');
+    $gateway = new AfricasTalkingGateway(config('sms.api_username'), config('sms.api_key'));
+    $recepient = '+254705813955,+254734741807';
+    $message = 'Testing Server config';
+    $from = config('sms.system_number');
+    try {
+        $results = $gateway->sendMessage($recepient, $message, $from);
+        foreach ($results as $result) {
+            echo ' Number: ' . $result->number;
+            echo ' Status: ' . $result->status;
+            echo ' MessageId: ' . $result->messageId;
+            echo ' Cost: ' . $result->cost . '\n';
+        }
+        echo '<br />success';
+    } catch (AfricasTalkingGatewayException $e) {
+        echo $e->getMessage();
+    }
+    return 'done';
 });
