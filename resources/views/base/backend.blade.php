@@ -7,7 +7,7 @@
 <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
 <meta http-equiv="pragma" content="no-cache" />
 
-<link rel="stylesheet" href="{{asset('assets/font-awesome/css/font-awesome.css')}}" type="text/css" />
+
 <link rel="stylesheet" href="{{asset('assets/css/style-responsive.css')}}" type="text/css" />
 <link rel="stylesheet" href="{{asset('assets/js/gritter/css/jquery.gritter.css')}}" type="text/css" />
 @yield('extra-styles')
