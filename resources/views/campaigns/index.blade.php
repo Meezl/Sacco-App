@@ -9,6 +9,11 @@ My Campaigns
 @stop
 
 @section('inner-content')
+<p>
+    <a href="{{ action('CampaignController@getNew') }}" class="btn btn-default">New</a>
+</p>
+
+<br />
 <table class="table table-striped table-hover table-bordered">   
     <thead>
         <tr>

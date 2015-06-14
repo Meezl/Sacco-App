@@ -39,15 +39,15 @@ Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function() {
 Route::controller('auth', 'Auth\AuthController');
 
 Route::get('test', function() {
-    $data = [];
-    $contacts = [6, 10, 5, 4, 2, 7, 9, 8];
-    $existing = [6];
-    foreach ($contacts as $id) {
-                if (array_search($id, $existing) !== false) {continue;}
-                $data[] = array(
-                    'contact_id' => $id,
-                    'campaign_id' => $campaign->id
-                );
-                \DB::table('campaign_contacts')->insert($data);
-            }
+   return view('callback');
+});
+
+Route::post('test', function() {
+    $file = public_path().'/data.json';
+    $handle = fopen($file, 'a');
+    
+    $data = $_POST;
+    fwrite($handle, json_encode($data));
+    \Debugbar::info(compact('data'));    
+    return view('callback');
 });
