@@ -41,7 +41,6 @@ All System Users
                 @endif
             </td>
             <td>
-                <a href="" class="btn btn-xs btn-success">Send Message</a>
                 @if(Auth::user()->is_admin)
                     @if($users[$i]->is_locked)
                     <a href="{{ action('UserController@getUnblock', [$users[$i]->id]) }}" class="btn btn-xs btn-warning tooltips" title="The user will now be able to login" data-toggle="tooltip" data-placement="bottom">UnBlock</a>

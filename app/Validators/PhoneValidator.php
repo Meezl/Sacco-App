@@ -17,6 +17,6 @@ class PhoneValidator {
      * @return array
      */
     public static function message() {
-        return ['kmobile' => 'A Valid Mobile Kenyan Number looks like: +254798765432 or 0712345678'];
+        return ['kmobile' => 'A Valid Mobile Kenyan Number has no spaces and looks like: +254798765432 or 0712345678'];
     }
 }

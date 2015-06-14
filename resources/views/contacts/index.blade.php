@@ -34,7 +34,7 @@ All Contacts
             <td>
                 <a href="{{ action('ContactController@getNew', [$contacts[$i]->id]) }}" class="btn btn-xs btn-primary">Edit</a>
                 <a href="{{ action('ContactController@getDelete', [$contacts[$i]->id]) }}" class="delete btn btn-xs btn-danger">Delete</a>
-                <a href="" class="btn btn-xs btn-success">Send Message</a>
+                
             </td>
         </tr>
         @endfor
