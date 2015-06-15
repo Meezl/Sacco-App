@@ -5,3 +5,4 @@ public/mailoutput
 public/uploads
 public/data.json
 composer.lock
+public/error_log
