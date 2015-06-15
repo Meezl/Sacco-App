@@ -263,6 +263,7 @@ class CampaignController extends Controller {
             $inserts = [];
             foreach ($statuses as $stat) {
                 $stat['text'] = $text;
+                $stat['user_id'] = \Auth::user()->id;
                 $inserts[] = $stat;
             }
             
@@ -288,7 +289,7 @@ class CampaignController extends Controller {
         } else {
             $campaign = Campaign::find(substr($id, 1));
         }
-
+        
         $this->show404Unless($campaign);
         return $campaign;
     }

@@ -18,8 +18,13 @@ Password Reset
                 <label>Email*</label>
                 <input autocomplete="off" value="{{ $email or '' }}" name="email" type="email" autofocus="" placeholder="Email" class="form-control">
                 {!!$errors->first('email', '<p class="small text-danger">:message</p>')!!}
-                <br>                
-                
+                            
+                <label class="checkbox">
+                    <span class="pull-right">
+                        <a id="forgot" href="{{ action('Auth\AuthController@getLogin') }}" data-toggle="modal">Login Here</a>
+
+                    </span>
+                </label>
                 <button type="submit" class="btn btn-theme btn-block"><i class="fa fa-unlock"></i> RESET</button>                
 
             </div>
