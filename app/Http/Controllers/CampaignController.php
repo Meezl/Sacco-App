@@ -196,10 +196,14 @@ class CampaignController extends Controller {
 
         if (count($existing)) {
             $contacts = Contact::whereNotIn('id', $existing)
+                    ->orderBy('first_name')
+                    ->orderBy('last_name')
                     ->paginate(self::CONTACTS_PER_PAGE)
                     ->setPath(\URL::current());
         } else {
-            $contacts = Contact::paginate(self::CONTACTS_PER_PAGE)
+            $contacts = Contact::orderBy('first_name')
+                    ->orderBy('last_name')
+                    ->paginate(self::CONTACTS_PER_PAGE)                    
                     ->setPath(\URL::current());
         }
         return view('campaigns.add-contacts', compact('campaign', 'contacts'));
