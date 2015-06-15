@@ -268,6 +268,7 @@ class CampaignController extends Controller {
             foreach ($statuses as $stat) {
                 $stat['text'] = $text;
                 $stat['user_id'] = \Auth::user()->id;
+                $stat['campaign_id'] = $campaign->id;
                 $inserts[] = $stat;
             }
             

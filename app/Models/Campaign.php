@@ -12,6 +12,8 @@ class Campaign extends \Eloquent {
     private $responses;
     private $myContacts;
     private $totalContacts;
+    private $sentMsgs;
+    private $receivedMsgs;
 
     const EXCERPT_LENGTH = 70;
     
@@ -58,6 +60,37 @@ class Campaign extends \Eloquent {
             $this->myContacts = $this->contacts()->get();
         }
         return $this->myContacts;
+    }
+    
+    public function messages() {
+        return $this->hasMany('App\Models\Message');
+    }
+    
+    /**
+     * Query for received messages
+     */
+    public function received() {
+        return $this->messages()->where('receiver', '=', config('sms.system_number'));
+    }
+    /**
+     * Query for sent Messagess
+     */
+    public function sent() {
+        return $this->messages()->where('sender', '=', config('sms.system_number'));
+    }
+    
+    public function getSentMsgs() {
+        if(is_null($this->sentMsgs)) {
+            $this->sentMsgs = $this->sent()->get();
+        }
+        return $this->sentMsgs;
+    }
+    
+    public function getReceivedMsgs() {
+        if(is_null($this->receivedMsgs)) {
+            $this->receivedMsgs = $this->received()->get();
+        }
+        return $this->receivedMsgs;
     }
 
     public function getHelpText() {

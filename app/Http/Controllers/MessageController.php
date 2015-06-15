@@ -22,7 +22,11 @@ class MessageController extends Controller{
         $msg->receiver = $data['to'];
         $msg->save();
 
-        MessageHelper::decode($msg);        
+        $response = MessageHelper::decode($msg);
+        if($response) {
+            $msg->campaign_id = $response->campaign_id;
+            $msg->save();
+        }
     }
     
     //get inbox
