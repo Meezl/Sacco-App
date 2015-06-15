@@ -26,7 +26,7 @@ class MessageHelper {
             return null;
         }
 
-        if (preg_match('/X[0-9]{4,}/i', $parts[0])) {
+        if (preg_match('/^X[0-9]{1,}$/i', $parts[0])) {
             $campaign = Campaign::find(substr($parts[0], 1));
             if (is_null($campaign)) {
                 return null;
@@ -41,6 +41,9 @@ class MessageHelper {
             }
 
             $resp->message_id = $msg->id;
+            $resp->save();
+            $campaign->total_responses += 1;
+            $campaign->save();
             return $resp;
         }
 

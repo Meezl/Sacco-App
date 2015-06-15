@@ -270,6 +270,8 @@ class CampaignController extends Controller {
             \DB::table('messages')->insert($inserts);
             \Session::flash('success', 'Text messages Sent successfuly.');
             $campaign->is_active = 1;
+            //increment total contacted
+            $campaign->total_contacted += count($inserts);
             $campaign->save();
         } catch (\AfricasTalkingGatewayException $ex) {
             \Session::flash('error', 'Error Sending Sms. More info: ' . $ex->getMessage());
