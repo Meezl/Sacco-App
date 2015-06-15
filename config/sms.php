@@ -1,7 +1,7 @@
 <?php
 
 return array(
-    'system_number' => 20880,
-    'api_key' => '39281d9b09ab08e990703dcd3997d9661fd1a24391b89633d4fd269f54a6b8b2',
-    'api_username' => 'jameskmb'
+    'system_number' => env('SMS_API_NUMBER'),
+    'api_key' => env('SMS_API_KEY'),
+    'api_username' => env('SMS_API_USERNAME')
 );

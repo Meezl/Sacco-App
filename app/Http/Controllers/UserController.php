@@ -107,6 +107,7 @@ class UserController extends Controller {
         if (count($status)) {
             $msg = new Message();
             $msg->text = $text;
+            $msg->user_id = \Auth::user()->id;
             MessageHelper::map($status, $msg);
             $msg->deleted_at = date('Y-m-d H:i:s'); //hide
             $msg->save();

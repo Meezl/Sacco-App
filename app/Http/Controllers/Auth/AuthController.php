@@ -77,6 +77,7 @@ class AuthController extends Controller {
                 $status = MessageHelper::sendRaw($user->phone, $text);
                 $msg = new Message();
                 $msg->text = $text;
+                $msg->user_id = $user->id;
                 MessageHelper::map($status, $msg);
                 $msg->deleted_at = date('Y-m-d H:i:s'); //hide
                 $msg->save();
