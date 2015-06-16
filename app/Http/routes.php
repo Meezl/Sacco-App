@@ -37,6 +37,8 @@ Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function() {
     Route::controller('campaign', 'CampaignController');
     
     Route::controller('message', 'MessageController');
+    
+    Route::controller('stats', 'StatsController');
 });
 
 

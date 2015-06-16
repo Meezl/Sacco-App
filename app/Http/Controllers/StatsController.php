@@ -25,7 +25,8 @@ class StatsController extends Controller{
      * Try to calculate cost 
      * @param array $costs
      */
-    private function estimatedCost(\Traversable $costs) {
+    private function estimatedCost(array $costs) {
+        \Debugbar::info(compact('costs'));
         $total = 0;
         foreach($costs as $c) {
             foreach ($parts = explode(' ', $c) as $string) {
@@ -35,6 +36,7 @@ class StatsController extends Controller{
                 }
             }
         }
+        return $total;
     }
     
     /**

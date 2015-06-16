@@ -39,7 +39,7 @@ My Campaigns
             </td>
             <td>
                 @if( $campaigns[$i]->is_active)
-                <a href="{{ action('StatsController@getCampaign', [$campaigns[$i]->id])" class="btn btn-primary btn-xs tooltips" title="Comming Soon">View Stats</a>
+                <a href="{{ action('StatsController@getCampaign', [$campaigns[$i]->id]) }}" class="btn btn-primary btn-xs tooltips" title="Comming Soon">View Stats</a>
                 @else
                 <a href="{{ action('CampaignController@getNew', [$campaigns[$i]->id]) }}" class="btn btn-primary btn-xs">Edit</a>
                 @endif                

@@ -11,7 +11,7 @@
 @section('inner-content')
 <ul>
     <li><b>Code: </b>{{ $campaign->getIdString() }}</li>
-    <li><b>Estimated Cost:</b> {{ $campagin->cost }}</li>
+    <li><b>Estimated Cost:</b> {{ $campaign->cost }}</li>
     <li><b>Responses: </b><a href="">View {{ $campaign->total_responses }} Campaign Responses</a></li>
 </ul>
 <h3>Description:</h3>
@@ -21,7 +21,7 @@
 <br />
 <h3>Actual Text Sent</h3>
 <div class="well well-lg">
-    {{ nl2br(htmlentities($campaign->getSms())) }}
+    {!! nl2br(htmlentities($campaign->getSms())) !!}
 </div>
 
 
