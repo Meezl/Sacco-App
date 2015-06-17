@@ -15,7 +15,8 @@ Add possible responses to {{ $campaign->title }}
 <br />
 
 <p>
-    Total Responses required: {{ $campaign->possible_responses }}
+    Total Responses required: {{ $campaign->possible_responses }} <br />
+    Already Added: {{ count($campaign->getAnswers()) }}
 </p>
 <div class="row">
     <div class="col-sm-6">
@@ -39,7 +40,7 @@ Add possible responses to {{ $campaign->title }}
     </div>
     <div class="col-sm-6">
         <h2>Saved Answers</h2>
-        @if($campaign->getAnswers()->isEmpty())
+        @if($campaign->getAnswers() == false || $campaign->getAnswers()->isEmpty())
         <p class="alert alert-info">Currently There are none</p>
         @else
         <form id="answers-form-existing" method="post" action="{{ action('CampaignController@postRemoveResponses', [$campaign->id]) }}" class="form">

@@ -164,7 +164,7 @@ class CampaignController extends Controller {
 
     public function getContacts($id) {
         $campaign = $this->retrieve($id);
-        if ($campaign->answers()->count() != $campaign->possible_responses) {
+        if ($campaign->possible_responses != 0 && ($campaign->answers()->count() != $campaign->possible_responses)) {
             \Session::flash('error', 'Please Finish adding all the possible responses first');
             return \Redirect::action('CampaignController@getAnswers', [$id]);
         }
