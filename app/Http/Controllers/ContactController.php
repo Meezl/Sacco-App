@@ -74,15 +74,21 @@ class ContactController extends Controller {
 
     public function getTransactions($number) {
         $contact = Contact::where('phone', '=', $number)->first();
-        $query = Message::where('sender', '=', $number)
-                ->orWhere('receiver', '=', $number)
-                ->orderBy('created_at', 'desc');
+
         //hide system messages
-        if (!\Auth::user()->is_admin) {
-            $query = $query->whereNull('deleted_at');
+        if (\Auth::user()->is_admin) {
+            $query = Message::where('sender', '=', $number)
+                    ->orWhere('receiver', '=', $number);
+        } else {
+            $query = Message::whereNull('deleted_at')
+                    ->where(function($query) use($number) {
+                            $query->where('sender', '=', $number)
+                            ->orWhere('receiver', '=', $number);
+                    });
         }
-        
+
         $messages = $query
+                ->orderBy('created_at', 'desc')
                 ->paginate(30)
                 ->setPath(\URL::current());
 
