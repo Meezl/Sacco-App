@@ -53,15 +53,13 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      * @return App\Models\Image profile image
      */
     public function getAvatar() {
+        if (!$this->image_id) {
+            return null;
+        }
         if ($this->avatar === false) {
-            if ($this->image_id) {
-                $this->avatar = $this->images()
-                        ->where('id', '=', $this->image_id)
-                        ->first();
-            }
-            else {
-                return null;
-            }
+            $this->avatar = $this->images()
+                    ->where('id', '=', $this->image_id)
+                    ->first();
         }
         return $this->avatar;
     }

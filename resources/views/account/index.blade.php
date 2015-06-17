@@ -67,6 +67,8 @@ My Account Settings
             <a href="{{ asset('uploads/images/'. $user->getAvatar()->filename) }}">
                 <img src="{{ asset('uploads/images/'. $user->getAvatar()->getCropped()) }}" alt="{{ $user->getFullName() }}" class="img-responsive" />
             </a>
+            <br />
+            <a href="{{ action('AccountController@getRemoveImage') }}" class="btn btn-danger tooltips" title="Remove Profile Image" data-placement="bottom">Remove</a>
             @else
                 Currently You have no profile Image
             @endif

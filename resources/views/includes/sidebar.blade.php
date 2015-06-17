@@ -7,9 +7,9 @@
                     <img src="{{ asset('uploads/images/'. Auth::user()->getAvatar()->getCropped()) }}" alt="{{ Auth::user()->getFullName() }}" class="img-responsive" />
                 </a>
                 @else
-                <a href=""><span class="user-image glyphicon glyphicon-user fa-5x"></span></a></p>
+                <a href=""><span class="user-image glyphicon glyphicon-user fa-5x"></span></a>
                 @endif
-
+            </p>
             <h5 class="centered">Welcome {{Auth::user()->last_name}}</h5>
             <li class="mt">
                 <a class="" href="{{ action('DashBoardController@getIndex') }}">

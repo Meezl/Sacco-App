@@ -1,15 +1,18 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Message;
+
 /**
  * Description of MessageController
  *
  * @author jameskmb
  */
-class MessageController extends Controller{
+class MessageController extends Controller {
+
     const MESSAGES_PER_PAGE = 20;
-    
+
     /**
      * Handle Incoming messages from urlCallback
      */
@@ -21,14 +24,17 @@ class MessageController extends Controller{
         $msg->sender = $data['from'];
         $msg->receiver = $data['to'];
         $msg->save();
-
-        $response = MessageHelper::decode($msg);
-        if($response) {
-            $msg->campaign_id = $response->campaign_id;
-            $msg->save();
-        }
+        
+        //for correct counting
+        \DB::transaction(function() use ($msg) {
+            $response = MessageHelper::decode($msg);
+            if ($response) {
+                $msg->campaign_id = $response->campaign_id;
+                $msg->save();
+            }
+        });
     }
-    
+
     //get inbox
     public function getIndex() {
         $messages = Message::where('sender', '<>', config('sms.system_number'))
@@ -38,7 +44,7 @@ class MessageController extends Controller{
                 ->setPath(\URL::current());
         return view('messages.index', compact('messages'));
     }
-    
+
     public function getOutbox() {
         $messages = Message::where('sender', '=', config('sms.system_number'))
                 ->whereNull('deleted_at')

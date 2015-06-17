@@ -88,6 +88,13 @@ class AccountController extends Controller {
         \Session::flash('success', 'Your Profile Picture has been successfuly updated');
         return \Redirect::action('AccountController@getIndex');
     }
+    
+    public function getRemoveImage() {
+        $user = \Auth::user();
+        $user->image_id = null;
+        $user->save();
+        return \Redirect::action('AccountController@getIndex');
+    }
 
     /**
      * Save an uploaded image

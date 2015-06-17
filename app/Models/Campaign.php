@@ -14,8 +14,11 @@ class Campaign extends \Eloquent {
     private $totalContacts;
     private $sentMsgs;
     private $receivedMsgs;
+    private $userResps;
+    
 
     const EXCERPT_LENGTH = 70;
+    const RESPONSES_PER_PAGE = 20;
     
     const TABLE_CAMPAIGN_CONTACTS = 'campaign_contacts';
 
@@ -91,6 +94,27 @@ class Campaign extends \Eloquent {
             $this->receivedMsgs = $this->received()->get();
         }
         return $this->receivedMsgs;
+    }
+    
+    /**
+     * Query for user Responses
+     */
+    public function response() {
+        return $this->hasMany('App\Models\Response');
+    }
+    
+    /**
+     * Retrieve paginated user responses;
+     * @return Collection
+     */
+    public function getResponse() {
+        if(is_null($this->userResps)) {
+            $this->userResps = $this->response()
+                    ->orderBy('created_at', 'desc')
+                    ->paginate(self::RESPONSES_PER_PAGE)
+                    ->setPath(\URL::current());
+        }
+        return $this->userResps;
     }
 
     public function getHelpText() {

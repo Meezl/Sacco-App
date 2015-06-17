@@ -35,9 +35,9 @@ Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function() {
     Route::controller('category', 'CategoryController');
 
     Route::controller('campaign', 'CampaignController');
-    
+
     Route::controller('message', 'MessageController');
-    
+
     Route::controller('stats', 'StatsController');
 });
 
@@ -45,5 +45,17 @@ Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function() {
 Route::controller('auth', 'Auth\AuthController');
 
 Route::get('test', function() {
-    return view('callback');
+    $campaign = App\Models\Campaign::find(12);
+    $options = explode("\n", $answers);
+    $result = [];
+    foreach ($options as $o) {
+        $temp = explode(':', $o);
+        $result[] = array(
+            'key' => $temp[0],
+            'val' => $temp[1]
+        );
+    }
+    return $result;
+    Debugbar::info(compact('result'));
+    return 'done';
 });

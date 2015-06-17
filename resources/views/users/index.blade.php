@@ -29,7 +29,13 @@ All System Users
         <tr>
             <td>{{ $i + 1 }}</td>
             <td>
-                <span class="fa fa-user fa-5x"></span>
+                @if($users[$i]->getAvatar())
+                <a href="{{ asset('uploads/images/'. $users[$i]->getAvatar()->filename) }}">
+                    <img src="{{ asset('uploads/images/'. $users[$i]->getAvatar()->getCropped()) }}" alt="{{ $users[$i]->getFullName() }}" class="img-responsive" />
+                </a>
+                @else
+                <span class="user-image glyphicon glyphicon-user fa-5x"></span>
+                @endif
             </td>
             <td>
                 <h5>{{ $users[$i]->getFullName() }}</h5>

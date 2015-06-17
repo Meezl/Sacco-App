@@ -3,11 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/xampp/htdocs/sms/app/Http/routes.php</file>
-            <file>file:/C:/xampp/htdocs/sms/app/Http/Controllers/StatsController.php</file>
-            <file>file:/C:/xampp/htdocs/sms/resources/views/reports/campaign-index.blade.php</file>
-            <file>file:/C:/xampp/htdocs/sms/app/Models/Campaign.php</file>
-            <file>file:/C:/xampp/htdocs/sms/resources/views/campaigns/index.blade.php</file>
+            <file>file:/var/www/html/sms/app/User.php</file>
+            <file>file:/var/www/html/sms/app/Http/Controllers/MessageHelper.php</file>
+            <file>file:/var/www/html/sms/app/Http/Controllers/StatsController.php</file>
+            <file>file:/var/www/html/sms/app/Http/routes.php</file>
+            <file>file:/var/www/html/sms/app/Models/Campaign.php</file>
         </group>
     </open-files>
 </project-private>

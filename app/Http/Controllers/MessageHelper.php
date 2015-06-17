@@ -18,7 +18,7 @@ class MessageHelper {
      * @param Message $msg
      * @return Response response
      */
-    public static function decode(Message $msg) {
+    public static function decode(Message $msg) {       
 
         //extract campaign code
         $parts = explode(' ', $msg->text);
