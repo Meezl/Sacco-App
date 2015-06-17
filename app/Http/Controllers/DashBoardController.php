@@ -1,6 +1,8 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\Message;
+
 /**
  * Description of DashBoardController
  *
@@ -9,6 +11,12 @@ namespace App\Http\Controllers;
 class DashBoardController  extends Controller{
     
     public function getIndex() {
-        return view('dashboard');
-    }
+        $stats = \DB::table('messages')
+                ->select(\DB::raw('count(*) as count, ucase(text) as text'))
+                ->where('text', '=', 'yes')
+                ->orWhere('text', '=', 'no')
+                ->groupBy('text')
+                ->get();
+        return view('dashboard', compact('stats'));
+    }    
 }
