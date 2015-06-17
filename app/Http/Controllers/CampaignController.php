@@ -269,6 +269,7 @@ class CampaignController extends Controller {
                 $stat['text'] = $text;
                 $stat['user_id'] = \Auth::user()->id;
                 $stat['campaign_id'] = $campaign->id;
+                $stat['created_at'] = $stat['updated_at'] = date('Y-m-d H:i:s');
                 $inserts[] = $stat;
             }
             

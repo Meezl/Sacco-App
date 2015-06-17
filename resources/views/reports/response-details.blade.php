@@ -38,10 +38,12 @@ Response Detail for - {{ $campaign->getIdString() }}
     <div class="col-sm-6">
         <h3>Associated Contact</h3>
         <ul>
-            <li><b>Number: </b>{{ $message->sender }}</li>
+            <li><b>fNumber: </b>
+                <a href="{{ action('ContactController@getTransactions', [$message->sender]) }}" class="tooltips" title="Activities From this number">{{ $message->sender }}</a>
+            </li>
             <li><b>Name:</b>
                 @if(is_null($contact))
-                    New Contact
+                <a href="{{ action('ContactController@getNew', [$message->sender]) }}" class="tooltips" title="Add to Contacts">New Contact</a>
                 @else
                 {{ $contact->getFullName() }}
                 @endif
