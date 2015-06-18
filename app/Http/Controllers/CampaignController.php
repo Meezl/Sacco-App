@@ -203,7 +203,7 @@ class CampaignController extends Controller {
         } else {
             $contacts = Contact::orderBy('first_name')
                     ->orderBy('last_name')
-                    ->paginate(self::CONTACTS_PER_PAGE)                    
+                    ->paginate(self::CONTACTS_PER_PAGE)
                     ->setPath(\URL::current());
         }
         return view('campaigns.add-contacts', compact('campaign', 'contacts'));
@@ -251,30 +251,34 @@ class CampaignController extends Controller {
     public function postSend($id) {
         $campaign = $this->retrieve($id);
         $contacts = $campaign->getContacts();
-        if ($contacts->isEmpty()) {
-            \Session::flash('error', 'Please Select The contacts That should receive this campaign');
-            return \Redirect::action('CampaignController@getAddContacts', [$id]);
-        }
-
+        /**
+          if ($contacts->isEmpty()) {
+          \Session::flash('error', 'Please Select The contacts That should receive this campaign');
+          return \Redirect::action('CampaignController@getAddContacts', [$id]);
+          }
+         * 
+         */
         $numbers = [];
         foreach ($contacts as $c) {
             $numbers[] = $c->phone;
         }
         try {
-            $text = $campaign->getSms();
-            $statuses = MessageHelper::sendFromSystem($numbers, $text);
-            //insert to db
-            $inserts = [];
-            foreach ($statuses as $stat) {
-                $stat['text'] = $text;
-                $stat['user_id'] = \Auth::user()->id;
-                $stat['campaign_id'] = $campaign->id;
-                $stat['created_at'] = $stat['updated_at'] = date('Y-m-d H:i:s');
-                $inserts[] = $stat;
+            if (count($numbers)) {
+                $text = $campaign->getSms();
+                $statuses = MessageHelper::sendFromSystem($numbers, $text);
+                //insert to db
+                $inserts = [];
+                foreach ($statuses as $stat) {
+                    $stat['text'] = $text;
+                    $stat['user_id'] = \Auth::user()->id;
+                    $stat['campaign_id'] = $campaign->id;
+                    $stat['created_at'] = $stat['updated_at'] = date('Y-m-d H:i:s');
+                    $inserts[] = $stat;
+                }
+
+                \DB::table('messages')->insert($inserts);
+                \Session::flash('success', 'Text messages Sent successfuly.');
             }
-            
-            \DB::table('messages')->insert($inserts);
-            \Session::flash('success', 'Text messages Sent successfuly.');
             $campaign->is_active = 1;
             //increment total contacted
             $campaign->total_contacted += count($inserts);
@@ -282,7 +286,7 @@ class CampaignController extends Controller {
         } catch (\AfricasTalkingGatewayException $ex) {
             \Session::flash('error', 'Error Sending Sms. More info: ' . $ex->getMessage());
         }
-        
+
         return \Redirect::action('CampaignController@getIndex');
     }
 
@@ -297,7 +301,7 @@ class CampaignController extends Controller {
         } else {
             $campaign = Campaign::find(substr($id, 1));
         }
-        
+
         $this->show404Unless($campaign);
         return $campaign;
     }
