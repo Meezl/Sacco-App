@@ -49,7 +49,7 @@ class Campaign extends \Eloquent {
      */
     public function getAnswers() {
         if ($this->possible_responses && is_null($this->responses)) {
-            $this->responses = $this->answers()->orderBy('message')->get();
+            $this->responses = $this->answers()->orderBy('id')->get();
         }
         return $this->responses;
     }
