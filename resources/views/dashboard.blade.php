@@ -13,7 +13,7 @@ Dashboard
 @section('inner-content')
 <h2>
     <i class="fa fa-angle-right"></i>
-    June 18 Members Attendance statistics
+    June 26 Class A Attendance statistics
 </h2>
 
 <p id="loader" class="text-center"><span class="fa fa-spin fa-spinner fa-5x"></span></p>
