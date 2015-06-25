@@ -34,6 +34,7 @@ class MessageController extends Controller {
                 $msg->save();
             }
         });
+        return 'Hello World';
     }
 
     //get inbox

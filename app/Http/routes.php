@@ -14,13 +14,11 @@
 //register custom kenyan mobile number validator
 Validator::extend('kmobile', 'App\Validators\PhoneValidator@validate');
 
-/**Test callback
+
 
 Route::get('callback', function() {
    return view('callback');
 });
- * 
- */
 
 Route::post('callback', 'MessageController@postHandleCallback');
 

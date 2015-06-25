@@ -31,7 +31,7 @@ class MessageHelper {
                 ->where('is_closed', '=', 0)
                 ->where('is_active', '=', 1)
                 ->first();
-        
+        \Debugbar::info(compact('parts', 'campaign'));
         if (is_null($campaign)) {
             return null;
         }
@@ -41,7 +41,7 @@ class MessageHelper {
                 ->where('sender', '=', $msg->sender)
                 ->where('receiver', '=', $msg->receiver)
                 ->count();
-        
+        \Debugbar::info(compact('prev'));
         if($prev > 1) {
             return null;
         }
