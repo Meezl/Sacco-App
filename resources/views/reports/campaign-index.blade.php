@@ -25,7 +25,7 @@
    <span class="fa fa-spinner fa-spin fa-3x"></span> 
 </p>
 
-<div id="chart" style="height: 300px"></div>
+<div id="chart" style="height: 500px"></div>
 <br />
 @endif
 <h3>Description:</h3>

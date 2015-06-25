@@ -14,9 +14,10 @@
 //register custom kenyan mobile number validator
 Validator::extend('kmobile', 'App\Validators\PhoneValidator@validate');
 
-/**
-Route::get('/', function() {
-    return redirect('dashboard');
+/**Test callback
+
+Route::get('callback', function() {
+   return view('callback');
 });
  * 
  */
@@ -47,11 +48,3 @@ Route::group(['middleware' => 'auth'], function() {
 
 Route::controller('auth', 'Auth\AuthController');
 
-Route::get('/test', function() {
-   $c = \App\Models\Campaign::all();
-   foreach($c as $t) {
-       $t->id_string = 'X'.$t->id;
-       $t->save();
-   }
-    
-});

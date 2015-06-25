@@ -31,6 +31,7 @@ My Campaigns
             <td>
                 <h5>Message: {{ $campaigns[$i]->message }} </h5>
                 <h6>{{ $campaigns[$i]->getExcerpt() }}</h6>
+                <h6>ID: {{ $campaigns[$i]->id_string }}</h6>
                 Status:
                 @if( $campaigns[$i]->is_active)
                     @if($campaigns[$i]->is_closed)

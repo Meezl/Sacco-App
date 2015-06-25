@@ -31,6 +31,7 @@ class MessageHelper {
                 ->where('is_closed', '=', 0)
                 ->where('is_active', '=', 1)
                 ->first();
+        
         if (is_null($campaign)) {
             return null;
         }
@@ -39,8 +40,9 @@ class MessageHelper {
         $prev = Message::where('text', 'LIKE', $parts[0].'%')
                 ->where('sender', '=', $msg->sender)
                 ->where('receiver', '=', $msg->receiver)
-                ->first();
-        if(!is_null($prev)) {
+                ->count();
+        
+        if($prev > 1) {
             return null;
         }
         
