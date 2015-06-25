@@ -5,11 +5,11 @@ New Campaign
 @stop
 
 @section('content-title')
-    @if($campaign->id)
-        Editing Campaign
-    @else 
-        new Campaign
-    @endif
+@if($campaign->id)
+Editing Campaign
+@else 
+new Campaign
+@endif
 @stop
 
 @section('inner-content')
@@ -20,6 +20,14 @@ New Campaign
 
 <form id="campaign-form-new" method="post" action="{{ action('CampaignController@postNew', [$campaign->id]) }}" class="form">
     {!! Form::token() !!}
+    <div class="form-group">
+        <label>Group</label>
+        <select name="group" class="form-control">
+            @foreach(App\Models\Group::ordered() as $g)
+            <option value="{{ $g->id }}" {{ $g->id == $campaign->group_id?'selected':'' }}>{{ $g->title }}</option>
+            @endforeach
+        </select>
+    </div>
     <div class="form-group">
         <label>Title*</label>
         <input value="{{ $campaign->title }}" type="text" name="title" class="form-control" />
@@ -55,7 +63,7 @@ New Campaign
         {!! $errors->first('category', '<p class="text-danger small">:message</p>') !!}
         <p class="help-block small">You can decide to send texts to only contacts in a given group</p>
     </div>
-    
+
     <div class="form-group">        
         <p>Send Help Text?</p>
         <label>
@@ -66,7 +74,7 @@ New Campaign
             <input type="radio" name="help_text" value="0" {{ !$campaign->help_text?'checked':'' }} /> No
         </label>
         <p class="help-block small">e.g Reply for free to {{ Config::get('sms.system_number') }} in the format( <b>EGERS X0005 A</b> )where A is your reply </p>
-           {!! $errors->first('help_text', '<p class="text-danger small">:message</p>') !!}
+        {!! $errors->first('help_text', '<p class="text-danger small">:message</p>') !!}
     </div>    
     <button class="btn btn-success pull-right">Save</button>
     <div class="clearfix"></div>    

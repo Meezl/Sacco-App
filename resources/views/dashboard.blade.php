@@ -33,21 +33,28 @@ Dashboard
             var loader = document.getElementById('loader');
                     loader.className = 'hidden';
                     var data = google.visualization.arrayToDataTable(getData());
-                    var options = {
-                    title: 'Members\' Responses',
-                            pieSliceText: 'label',
-                            is3D: true
-                    };
-                    var chart = new google.visualization.PieChart(document.getElementById('pie_chart'));
-                    chart.draw(data, options);
+                    
+                    var view = new google.visualization.DataView(data);
+                    view.setColumns([0, 1,
+                        {
+                            calc: "stringify",
+                            sourceColumn: 1,
+                            type: "string",
+                            role: "annotation"
+                        },
+                        2]);
+                    var options = {title: 'Members\' Responses',
+                    legend: {position: 'none'}};
+                    var chart = new google.visualization.BarChart(document.getElementById('pie_chart'));
+                    chart.draw(view, options);
             }
 
     function getData() {
     return [
-            ['Resonse', 'count']
-            @foreach($stats as $s)
-            , ["{{ $s->text }}", {{ $s->count }}]
-            @endforeach
+            ['Response', 'count', {role: 'style'}]
+            @for($i = 0; $i < count($stats); $i++)
+            ,["{{ $stats[$i]->text}}", {{ $stats[$i]->count }}, "{{$colors[$i]}}"]
+            @endfor            
     ];
     }
 </script>

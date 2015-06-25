@@ -1,3 +1,6 @@
+body{
+    font-size: 17px;
+}
 .alert.alert-dismissable {
     margin-top: 20px;
 }

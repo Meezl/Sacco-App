@@ -15,7 +15,7 @@ use App\Models\Contact;
 class CampaignController extends Controller {
 
     const CONTACTS_PER_PAGE = 20;
-    const CAMPAIGNS_PER_PAGE = 10;
+    const CAMPAIGNS_PER_PAGE = 10;    
 
     public function getNew($id = null) {
         $campaign = $this->retrieve($id);
@@ -28,6 +28,7 @@ class CampaignController extends Controller {
 
         $rules = array(
             'title' => 'required|max:200',
+            'group' => 'required|exists:groups,id',
             'description' => 'required',
             'message' => 'required|max:900',
             'possible_responses' => 'required|integer|between:0,26',
@@ -65,6 +66,9 @@ class CampaignController extends Controller {
         }
 
         $campaign->creator_id = \Auth::user()->id;
+        $campaign->save();
+        $group = $campaign->getGroup();
+        $campaign->id_string = $group->abreviation.$campaign->id;
         $campaign->save();
         \Session::flash('success', 'Campaign Successfuly Updated');
 
@@ -299,7 +303,7 @@ class CampaignController extends Controller {
         if (is_numeric($id)) {
             $campaign = Campaign::find($id);
         } else {
-            $campaign = Campaign::find(substr($id, 1));
+            $campaign = Campaign::where('id_string', '=', $id)->first();
         }
 
         $this->show404Unless($campaign);
@@ -323,6 +327,9 @@ class CampaignController extends Controller {
     }
 
     private function map(array $data, Campaign $c) {
+        if (array_key_exists('group', $data)) {
+            $c->group_id = $data['group'];
+        }
         if (array_key_exists('title', $data)) {
             $c->title = $data['title'];
         }
