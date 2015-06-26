@@ -18,7 +18,7 @@ class MessageHelper {
      * @param Message $msg
      * @return Response response
      */
-    public static function decode(Message $msg) {       
+    public static function decode(Message $msg) {
 
         //extract campaign code
         $parts = explode(' ', $msg->text);
@@ -26,28 +26,40 @@ class MessageHelper {
             return null;
         }
 
-        if (preg_match('/^X[0-9]{1,}$/i', $parts[0])) {
-            $campaign = Campaign::find(substr($parts[0], 1));
-            if (is_null($campaign)) {
-                return null;
-            }
-            $resp = new Response();
-            $resp->campaign_id = $campaign->id;
-            //correct response. one character only
-            if ($campaign->possible_responses && count($parts) == 2 && strlen($parts[1]) == 1) {
-                $resp->text = strtoupper($parts[1]);
-            } else {
-                $resp->text = implode(' ', array_slice($parts, 1));
-            }
 
-            $resp->message_id = $msg->id;
-            $resp->save();
-            $campaign->total_responses += 1;
-            $campaign->save();
-            return $resp;
+        $campaign = Campaign::where('id_string', '=', $parts[0])
+                ->where('is_closed', '=', 0)
+                ->where('is_active', '=', 1)
+                ->first();
+        \Debugbar::info(compact('parts', 'campaign'));
+        if (is_null($campaign)) {
+            return null;
+        }
+        
+        //prevent double voting 
+        $prev = Message::where('text', 'LIKE', $parts[0].'%')
+                ->where('sender', '=', $msg->sender)
+                ->where('receiver', '=', $msg->receiver)
+                ->count();
+        \Debugbar::info(compact('prev'));
+        if($prev > 1) {
+            return null;
+        }
+        
+        $resp = new Response();
+        $resp->campaign_id = $campaign->id;
+        //correct response. one character only
+        if ($campaign->possible_responses && count($parts) == 2 && strlen($parts[1]) == 1) {
+            $resp->text = strtoupper($parts[1]);
+        } else {
+            $resp->text = implode(' ', array_slice($parts, 1));
         }
 
-        return null;
+        $resp->message_id = $msg->id;
+        $resp->save();
+        $campaign->total_responses += 1;
+        $campaign->save();
+        return $resp;
     }
 
     /**

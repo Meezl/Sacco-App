@@ -31,15 +31,26 @@ My Campaigns
             <td>
                 <h5>Message: {{ $campaigns[$i]->message }} </h5>
                 <h6>{{ $campaigns[$i]->getExcerpt() }}</h6>
+                <h6>ID: {{ $campaigns[$i]->id_string }}</h6>
+                Status:
                 @if( $campaigns[$i]->is_active)
-                Status: <span class="text-success">Active</span>
+                    @if($campaigns[$i]->is_closed)
+                    <span class="text-danger">Closed</span>
+                    @else
+                    <span class="text-success">Open</span>
+                    @endif                
                 @else 
-                Status: <span class="text-primary">Draft</span>
+                <span class="text-primary">Draft</span>
                 @endif
             </td>
             <td>
                 @if( $campaigns[$i]->is_active)
-                <a href="{{ action('StatsController@getCampaign', [$campaigns[$i]->getIdString()]) }}" class="btn btn-primary btn-xs">View Stats</a>
+                <a href="{{ action('StatsController@getCampaign', [$campaigns[$i]->id_string]) }}" class="btn btn-primary btn-xs">View Stats</a>
+                    @if($campaigns[$i]->is_closed)
+                    <a href="{{ action('StatsController@getOpen', [$campaigns[$i]->id_string]) }}" class="btn btn-success tooltips btn-xs" title="Campaign Will now be able to receive new responses">Open</a>
+                    @else 
+                    <a href="{{ action('StatsController@getClose', [$campaigns[$i]->id_string]) }}" class="btn btn-warning btn-xs tooltips" title="New User responses will be ignored">Close</a>
+                    @endif
                 @else
                 <a href="{{ action('CampaignController@getNew', [$campaigns[$i]->id]) }}" class="btn btn-primary btn-xs">Edit</a>
                 @endif                

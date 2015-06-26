@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Contact;
 use App\Validators\PhoneValidator;
+use App\Models\Message;
 
 /**
  * Description of ContactController
@@ -22,12 +23,7 @@ class ContactController extends Controller {
     }
 
     public function getNew($id = null) {
-        if (!is_null($id)) {
-            $contact = Contact::find($id);
-            $this->show404Unless($contact);
-        } else {
-            $contact = new Contact();
-        }
+        $contact = $this->retrieve($id);
         return view('contacts.new', compact('contact'));
     }
 
@@ -36,12 +32,7 @@ class ContactController extends Controller {
      * @param int $id id of contact to edit
      */
     public function postNew($id = null) {
-        if (!is_null($id)) {
-            $contact = Contact::find($id);
-            $this->show404Unless($contact);
-        } else {
-            $contact = new Contact();
-        }
+        $contact = $this->retrieve($id);
 
         $data = \Input::all();
         $rules = array(
@@ -59,26 +50,49 @@ class ContactController extends Controller {
         if (strpos($data['phone_number'], '+254') === false) {
             $contact->phone = '+254' . substr($data['phone_number'], 1);
         }
-        
+
         //prevent duplicates
-        $duplicate = Contact::where('phone', '=', $contact->phone)->first();                
-        if(!is_null($duplicate) && $duplicate->id != $contact->id) {
+        $duplicate = Contact::where('phone', '=', $contact->phone)->first();
+        if (!is_null($duplicate) && $duplicate->id != $contact->id) {
             \Session::flash('error', 'There already Exists a member with that Phone Number');
             \Session::flash('contact-duplicate', \URL::action('ContactController@getNew', [$duplicate->id]));
             return view('contacts.new', compact('contact'));
         }
-        
+
         $contact->save();
         \Session::flash('success', 'Contact Successfuly Saved');
         return \Redirect::action('ContactController@getNew');
     }
-    
+
     public function getDelete($id) {
         $contact = Contact::find($id);
         $this->show404Unless($contact);
         $contact->delete();
-        \Session::flash('success', 'Contact for '.$contact->getFullName().' successfuly Deleted');
+        \Session::flash('success', 'Contact for ' . $contact->getFullName() . ' successfuly Deleted');
         return \Redirect::action('ContactController@getIndex');
+    }
+
+    public function getTransactions($number) {
+        $contact = Contact::where('phone', '=', $number)->first();
+
+        //hide system messages
+        if (\Auth::user()->is_admin) {
+            $query = Message::where('sender', '=', $number)
+                    ->orWhere('receiver', '=', $number);
+        } else {
+            $query = Message::whereNull('deleted_at')
+                    ->where(function($query) use($number) {
+                            $query->where('sender', '=', $number)
+                            ->orWhere('receiver', '=', $number);
+                    });
+        }
+
+        $messages = $query
+                ->orderBy('created_at', 'desc')
+                ->paginate(30)
+                ->setPath(\URL::current());
+
+        return view('contacts.transactions', compact('contact', 'messages', 'number'));
     }
 
     private function map(array $data, Contact $contact) {
@@ -93,6 +107,25 @@ class ContactController extends Controller {
         if (array_key_exists('phone_number', $data)) {
             $contact->phone = $data['phone_number'];
         }
+    }
+
+    /**
+     * Retrieve contact
+     * @param Contact $id
+     */
+    private function retrieve($id) {
+        if (!is_null($id)) {
+            if (preg_match('/^\+254[0-9]{9}$/', $id)) {
+                $contact = new Contact();
+                $contact->phone = $id;
+            } else {
+                $contact = Contact::find($id);
+                $this->show404Unless($contact);
+            }
+        } else {
+            $contact = new Contact();
+        }
+        return $contact;
     }
 
 }

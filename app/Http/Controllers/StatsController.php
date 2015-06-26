@@ -14,6 +14,22 @@ use App\Models\Contact;
 class StatsController extends Controller {
 
     const SPOILT_VOTES = 'Invalid Responses';
+    
+    
+    
+    public function getOpen($id) {
+        $campaign = $this->retrieve($id);
+        $campaign->is_closed = 0;
+        $campaign->save();
+        return \Redirect::action('CampaignController@getIndex');
+    }
+    
+    public function getClose($id) {
+        $campaign = $this->retrieve($id);
+        $campaign->is_closed = 1;
+        $campaign->save();
+        return \Redirect::action('CampaignController@getIndex');
+    }
 
     /**
      * Get the statistics of a campaign
@@ -36,7 +52,13 @@ class StatsController extends Controller {
                 'count' => $campaign->total_contacted - $total
             );
         }
-        return view('reports.campaign-index', compact('campaign', 'stats'));
+        $colors = config('sms.colors');
+        $temp = [];
+        foreach ($stats as $s) {
+            $temp[] = (object) $s;
+        }
+        $stats = $temp;
+        return view('reports.campaign-index', compact('campaign', 'stats', 'colors'));
     }
 
     /**
@@ -145,7 +167,7 @@ class StatsController extends Controller {
         if (is_numeric($id)) {
             $campaign = $query->where('id', '=', $id)->first();
         } else if (strlen($id) > 1) {
-            $campaign = $query->where('id', '=', substr($id, 1))->first();
+            $campaign = $query->where('id_string', '=', $id)->first();
         }
 
         $this->show404Unless($campaign);

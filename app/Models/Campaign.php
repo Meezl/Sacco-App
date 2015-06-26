@@ -15,6 +15,11 @@ class Campaign extends \Eloquent {
     private $sentMsgs;
     private $receivedMsgs;
     private $userResps;
+    /**
+     *
+     * @var Group
+     */
+    private $group = false;
     
 
     const EXCERPT_LENGTH = 70;
@@ -30,10 +35,22 @@ class Campaign extends \Eloquent {
     }
 
     public function getIdString() {
-        if ($this->id) {
-            return sprintf('X%04d', $this->id);
+        return $this->id_string;
+    }
+    
+    /**
+     * Query for members groups
+     */
+    public function group() {
+        return $this->belongsTo('App\Models\Group');
+    }
+    
+    public function getGroup() {
+        if ($this->group === false) {
+            $this->group = $this->group()->first();
         }
-        return null;
+        
+        return $this->group;
     }
 
     /**
@@ -49,7 +66,7 @@ class Campaign extends \Eloquent {
      */
     public function getAnswers() {
         if ($this->possible_responses && is_null($this->responses)) {
-            $this->responses = $this->answers()->orderBy('message')->get();
+            $this->responses = $this->answers()->orderBy('id')->get();
         }
         return $this->responses;
     }

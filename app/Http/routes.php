@@ -11,18 +11,20 @@
   |
  */
 
-//register custom validators
+//register custom kenyan mobile number validator
 Validator::extend('kmobile', 'App\Validators\PhoneValidator@validate');
 
 
-Route::get('/', function() {
-    return redirect('dashboard');
+
+Route::get('callback', function() {
+   return view('callback');
 });
 
 Route::post('callback', 'MessageController@postHandleCallback');
 
+//Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function() {
 
-Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function() {
+Route::group(['middleware' => 'auth'], function() {
 
     Route::get('/', 'DashBoardController@getIndex');
 
@@ -44,18 +46,3 @@ Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function() {
 
 Route::controller('auth', 'Auth\AuthController');
 
-Route::get('test', function() {
-    $campaign = App\Models\Campaign::find(12);
-    $options = explode("\n", $answers);
-    $result = [];
-    foreach ($options as $o) {
-        $temp = explode(':', $o);
-        $result[] = array(
-            'key' => $temp[0],
-            'val' => $temp[1]
-        );
-    }
-    return $result;
-    Debugbar::info(compact('result'));
-    return 'done';
-});

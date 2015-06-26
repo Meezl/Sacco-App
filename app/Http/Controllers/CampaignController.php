@@ -15,7 +15,7 @@ use App\Models\Contact;
 class CampaignController extends Controller {
 
     const CONTACTS_PER_PAGE = 20;
-    const CAMPAIGNS_PER_PAGE = 10;
+    const CAMPAIGNS_PER_PAGE = 10;    
 
     public function getNew($id = null) {
         $campaign = $this->retrieve($id);
@@ -28,6 +28,7 @@ class CampaignController extends Controller {
 
         $rules = array(
             'title' => 'required|max:200',
+            'group' => 'required|exists:groups,id',
             'description' => 'required',
             'message' => 'required|max:900',
             'possible_responses' => 'required|integer|between:0,26',
@@ -65,6 +66,9 @@ class CampaignController extends Controller {
         }
 
         $campaign->creator_id = \Auth::user()->id;
+        $campaign->save();
+        $group = $campaign->getGroup();
+        $campaign->id_string = $group->abreviation.$campaign->id;
         $campaign->save();
         \Session::flash('success', 'Campaign Successfuly Updated');
 
@@ -203,7 +207,7 @@ class CampaignController extends Controller {
         } else {
             $contacts = Contact::orderBy('first_name')
                     ->orderBy('last_name')
-                    ->paginate(self::CONTACTS_PER_PAGE)                    
+                    ->paginate(self::CONTACTS_PER_PAGE)
                     ->setPath(\URL::current());
         }
         return view('campaigns.add-contacts', compact('campaign', 'contacts'));
@@ -251,37 +255,42 @@ class CampaignController extends Controller {
     public function postSend($id) {
         $campaign = $this->retrieve($id);
         $contacts = $campaign->getContacts();
-        if ($contacts->isEmpty()) {
-            \Session::flash('error', 'Please Select The contacts That should receive this campaign');
-            return \Redirect::action('CampaignController@getAddContacts', [$id]);
-        }
-
+        /**
+          if ($contacts->isEmpty()) {
+          \Session::flash('error', 'Please Select The contacts That should receive this campaign');
+          return \Redirect::action('CampaignController@getAddContacts', [$id]);
+          }
+         * 
+         */
         $numbers = [];
         foreach ($contacts as $c) {
             $numbers[] = $c->phone;
         }
         try {
-            $text = $campaign->getSms();
-            $statuses = MessageHelper::sendFromSystem($numbers, $text);
-            //insert to db
-            $inserts = [];
-            foreach ($statuses as $stat) {
-                $stat['text'] = $text;
-                $stat['user_id'] = \Auth::user()->id;
-                $stat['campaign_id'] = $campaign->id;
-                $inserts[] = $stat;
+            if (count($numbers)) {
+                $text = $campaign->getSms();
+                $statuses = MessageHelper::sendFromSystem($numbers, $text);
+                //insert to db
+                $inserts = [];
+                foreach ($statuses as $stat) {
+                    $stat['text'] = $text;
+                    $stat['user_id'] = \Auth::user()->id;
+                    $stat['campaign_id'] = $campaign->id;
+                    $stat['created_at'] = $stat['updated_at'] = date('Y-m-d H:i:s');
+                    $inserts[] = $stat;
+                }
+
+                \DB::table('messages')->insert($inserts);
+                 $campaign->total_contacted += count($inserts);
+                \Session::flash('success', 'Text messages Sent successfuly.');
             }
-            
-            \DB::table('messages')->insert($inserts);
-            \Session::flash('success', 'Text messages Sent successfuly.');
             $campaign->is_active = 1;
-            //increment total contacted
-            $campaign->total_contacted += count($inserts);
+            //increment total contacted           
             $campaign->save();
         } catch (\AfricasTalkingGatewayException $ex) {
             \Session::flash('error', 'Error Sending Sms. More info: ' . $ex->getMessage());
         }
-        
+
         return \Redirect::action('CampaignController@getIndex');
     }
 
@@ -294,9 +303,9 @@ class CampaignController extends Controller {
         if (is_numeric($id)) {
             $campaign = Campaign::find($id);
         } else {
-            $campaign = Campaign::find(substr($id, 1));
+            $campaign = Campaign::where('id_string', '=', $id)->first();
         }
-        
+
         $this->show404Unless($campaign);
         return $campaign;
     }
@@ -318,6 +327,9 @@ class CampaignController extends Controller {
     }
 
     private function map(array $data, Campaign $c) {
+        if (array_key_exists('group', $data)) {
+            $c->group_id = $data['group'];
+        }
         if (array_key_exists('title', $data)) {
             $c->title = $data['title'];
         }

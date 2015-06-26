@@ -25,7 +25,7 @@
    <span class="fa fa-spinner fa-spin fa-3x"></span> 
 </p>
 
-<div id="chart" style="height: 300px"></div>
+<div id="chart" style="height: 500px"></div>
 <br />
 @endif
 <h3>Description:</h3>
@@ -51,25 +51,31 @@
         }
         var loader = document.getElementById('loader');
         loader.className = 'hidden';
-        var data = google.visualization.arrayToDataTable(getData());
-        var options = {
-            title: 'Campaign Response Statistics',
-            pieSliceText: 'label',
-            is3D: true
-        };
-
-        var chart = new google.visualization.PieChart(document.getElementById('chart'));
-        chart.draw(data, options);
+        var data = google.visualization.arrayToDataTable(getData()); 
+        var view = new google.visualization.DataView(data);
+        view.setColumns([0, 1,
+            {
+                calc: "stringify",
+                sourceColumn: 1,
+                type: "string",
+                role: "annotation"
+            },
+            2]);
+                    
+        var options = {title: 'Campaign Response Statistics',
+        legend: {position: 'none'}};
+        var chart = new google.visualization.BarChart(document.getElementById('chart'));
+        chart.draw(view, options);
 
     }
 
-    function getData() {
+    function getData() {        
         return [
-            ['Resonse', 'count']
-            @foreach($stats as $s) 
-                ,["{{ $s['val'] }}", {{ $s['count'] }}]
-            @endforeach
-        ];
+            ['Response', 'count', {role: 'style'}]
+            @for($i = 0; $i < count($stats); $i++)
+            ,["{{ $stats[$i]->val}}", {{ $stats[$i]->count }}, "{{$colors[$i]}}"]
+            @endfor            
+    ];
     }
 }());
 

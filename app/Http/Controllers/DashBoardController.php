@@ -21,7 +21,9 @@ class DashBoardController extends Controller {
                 })
                 ->groupBy('text')
                 ->get();
-        return view('dashboard', compact('stats'));
+
+         $colors = config('sms.colors');         
+        return view('dashboard', compact('stats', 'colors'));
     }
 
 }

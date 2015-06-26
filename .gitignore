@@ -7,3 +7,4 @@ public/data.json
 composer.lock
 public/error_log
 /nbproject
+/nbproject/private/private.xml
