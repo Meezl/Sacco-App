@@ -53,7 +53,7 @@ Dashboard
 
 <p id="loader" class="text-center"><span class="fa fa-spin fa-spinner fa-5x"></span></p>
 
-<div id="pie_chart" style="height: 400px"></div>
+<div id="pie_chart" style="height: 500px"></div>
 @else
 <p class="alert alert-info">No User Response has arrived Yet</p>
 @endif
