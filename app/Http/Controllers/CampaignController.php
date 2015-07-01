@@ -29,7 +29,6 @@ class CampaignController extends Controller {
         $rules = array(
             'title' => 'required|max:200',
             'group' => 'required|exists:groups,id',
-            'description' => 'required',
             'message' => 'required|max:900',
             'possible_responses' => 'required|integer|between:0,26',
             'category' => 'required|integer',
@@ -56,13 +55,6 @@ class CampaignController extends Controller {
                 \Session::flash('error', 'Invalid Category Selected');
                 return view('campaigns.new', compact('campaign'));
             }
-        }
-
-        //prevent duplicates
-        $dulicate = Campaign::where('title', $campaign->title)->first();
-        if (!is_null($dulicate) && $dulicate->id != $campaign->id) {
-            \Session::flash('error', 'A Campaign  With that title aready exists');
-            return view('campaigns.new', compact('campaign'));
         }
 
         $campaign->creator_id = \Auth::user()->id;

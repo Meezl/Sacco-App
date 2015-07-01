@@ -47,7 +47,7 @@ My Campaigns
                 @if( $campaigns[$i]->is_active)
                 <a href="{{ action('StatsController@getCampaign', [$campaigns[$i]->id_string]) }}" class="btn btn-primary btn-xs">View Stats</a>
                     @if($campaigns[$i]->is_closed)
-                    <a href="{{ action('StatsController@getOpen', [$campaigns[$i]->id_string]) }}" class="btn btn-success tooltips btn-xs" title="Campaign Will now be able to receive new responses">Open</a>
+                    <a href="{{ action('StatsController@getOpen', [$campaigns[$i]->id_string]) }}" class="btn btn-success tooltips btn-xs" title="Campaign Will now be able to receive new responses">Reopen</a>
                     @else 
                     <a href="{{ action('StatsController@getClose', [$campaigns[$i]->id_string]) }}" class="btn btn-warning btn-xs tooltips" title="New User responses will be ignored">Close</a>
                     @endif

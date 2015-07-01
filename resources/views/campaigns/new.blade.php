@@ -34,7 +34,7 @@ new Campaign
         {!! $errors->first('title', '<p class="text-danger small">:message</p>') !!}
     </div>
     <div class="form-group">
-        <label>Description*</label>
+        <label>Description(optional)</label>
         <textarea class="form-control" name="description">{{ $campaign->description }}</textarea>
         <p class="help-block small">What is the purpose of this campaign</p>
         {!! $errors->first('description', '<p class="text-danger small">:message</p>') !!}
