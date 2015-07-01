@@ -22,8 +22,25 @@ class UserController extends Controller {
                 ->setPath(\URL::current());
         return view('users.index', compact('users'));
     }
+    
+    public function getDelete($id) {
+        $this->show404Unless(\Auth::user()->is_admin);
+        $user = User::find($id);
+        $this->show404Unless($user);
+
+        if ($user->id == \Auth::user()->id) {
+            Session::flash('error', 'Illegal Action. You cannot block yourself');
+        } else {
+            $user->delete();
+            \Session::flash('success', $user->getFullName() . ' Successfuly Blocked');
+        }
+
+
+        return \Redirect::action('UserController@getIndex');
+    }
 
     public function getBlock($id) {
+        $this->show404Unless(\Auth::user()->is_admin);
         $user = User::find($id);
         $this->show404Unless($user);
 
@@ -40,6 +57,7 @@ class UserController extends Controller {
     }
 
     public function getUnblock($id) {
+        $this->show404Unless(\Auth::user()->is_admin);
         $user = User::find($id);
         $this->show404Unless($user);
 

@@ -53,7 +53,7 @@ All System Users
                     @else
                         <a href="{{ action('UserController@getBlock', [$users[$i]->id]) }}" class="btn btn-xs btn-warning tooltips" title="The user will not be able to login" data-toggle="tooltip" data-placement="bottom">Block</a>
                     @endif
-                    <a href="" class="btn btn-xs btn-danger delete">Delete</a>
+                    <a href="{{ action('UserController@getDelete', [$users[$i]->id]) }}" class="btn btn-xs btn-danger delete">Delete</a>
                 @endif
             </td>
         </tr>
