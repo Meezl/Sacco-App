@@ -32,7 +32,7 @@ class UserController extends Controller {
             Session::flash('error', 'Illegal Action. You cannot block yourself');
         } else {
             $user->delete();
-            \Session::flash('success', $user->getFullName() . ' Successfuly Blocked');
+            \Session::flash('success', $user->getFullName() . ' Successfuly Deleted');
         }
 
 
