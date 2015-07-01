@@ -10,16 +10,53 @@ Dashboard
 
 
 
+@section('extra-styles')
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+@stop
+
+
 @section('inner-content')
 <h2>
     <i class="fa fa-angle-right"></i>
-    June 26 Class A Attendance statistics
+    Meeting Attendance statistics
 </h2>
+
+<form action="{{ action('DashBoardController@postNewMeeting') }}" method="post" class="form" id="form-dashboard">
+    <h4 class="text-center">Showing Responses received</h4>
+    @if(count($errors))
+    <p class="alert alert-danger">
+        @foreach($errors as $r)
+        {{ $r }}<br />
+        @endforeach
+    </p>
+    @endif
+    <div class="row">
+        <div class="col-sm-5">
+            <div class="form-group">
+                <label>From:</label>
+                <input  value="{{ $meeting->start }}"  name="start" type="text" class="form-control date" />
+            </div>
+        </div>
+        <div class="col-sm-5">
+            <div class="form-group">
+                <label>To:</label>
+                <input value="{{ $meeting->end }}" name="end" type="text" class="form-control date" />
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <button type="submit" class="btn btn-theme">Show</button>
+        </div>
+    </div>
+</form>
+
+@if(!is_null($stats) && count($stats))
 
 <p id="loader" class="text-center"><span class="fa fa-spin fa-spinner fa-5x"></span></p>
 
 <div id="pie_chart" style="height: 400px"></div>
-
+@else
+<p class="alert alert-info">No User Response has arrived Yet</p>
+@endif
 
 @stop
 
@@ -58,4 +95,8 @@ Dashboard
     ];
     }
 </script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+  <script>
+      $('.date').datepicker();
+  </script>
 @stop
