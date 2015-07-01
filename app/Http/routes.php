@@ -27,6 +27,8 @@ Route::post('callback', 'MessageController@postHandleCallback');
 Route::group(['middleware' => 'auth'], function() {
 
     Route::get('/', 'DashBoardController@getIndex');
+    
+    Route::post('/new-meeting', 'DashBoardController@postNewMeeting');
 
     Route::controller('user', 'UserController');
 
@@ -47,6 +49,12 @@ Route::group(['middleware' => 'auth'], function() {
 Route::controller('auth', 'Auth\AuthController');
 
 Route::get('test', function() {
+   $meeting = \App\Models\Meeting::first();
+   return \App\Models\Meeting::dbDate($meeting->start);
+    
+});
+
+Route::get('another', function() {
 
     class MYPDF extends TCPDF {
 
