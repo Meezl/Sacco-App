@@ -82,7 +82,7 @@ Dashboard
                         2]);
                     var options = {title: 'Members\' Responses',
                     legend: {position: 'none'}};
-                    var chart = new google.visualization.BarChart(document.getElementById('pie_chart'));
+                    var chart = new google.visualization.ColumnChart(document.getElementById('pie_chart'));
                     chart.draw(view, options);
             }
 

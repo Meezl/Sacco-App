@@ -38,27 +38,47 @@ class StatsController extends Controller {
     public function getCampaign($id) {
         $campaign = $this->retrieve($id);
         $campaign->cost = $this->estimatedCost($campaign->sent()->lists('cost'));
-        //determine pending votes
-        $stats = $this->generateStats($campaign);
+        
+        $stats = $this->formatedStats($campaign);
+        
+        //recount to include invalid/mising responses
+        $campaign->total_responses = 0;
+        foreach($stats as $s) {
+            $campaign->total_responses += $s->count;
+        }
+        
+        $colors = config('sms.colors');
+        
+        return view('reports.campaign-index', compact('campaign', 'stats', 'colors'));
+    }
+    
+    private function formatedStats(Campaign $campaign) {
+        $temp = $this->generateStats($campaign);
         $total = 0;
-        foreach($stats as $val) {
+        foreach($temp as $val) {
             $total += $val['count'];
         }
         
-        if($total <= $campaign->total_contacted) {
-            $stats[] = array(
+        if($total < $campaign->total_contacted) {
+            $temp[] = array(
                 'key' => 'pending',
                 'val' => 'Pending Responses',
                 'count' => $campaign->total_contacted - $total
             );
         }
-        $colors = config('sms.colors');
-        $temp = [];
-        foreach ($stats as $s) {
-            $temp[] = (object) $s;
+        
+        $stats = [];
+        foreach ($temp as $s) {
+            if ($total == 0) {
+                $s['percent'] = 0;               
+            }
+            else {
+                $s['percent'] = ($s['count']/$total)* 100; //convert to %  
+            }            
+            $stats[] = (object) $s;
         }
-        $stats = $temp;
-        return view('reports.campaign-index', compact('campaign', 'stats', 'colors'));
+        
+        return $stats;
     }
 
     /**

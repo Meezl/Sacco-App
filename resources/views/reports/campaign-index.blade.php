@@ -13,7 +13,7 @@
     <li><b>Code: </b>{{ $campaign->getIdString() }}</li>
     <li><b>Members Contacted:</b>{{ $campaign->total_contacted }} </li>
     <li><b>Estimated Cost Incurred:</b> {{ $campaign->cost }}</li>
-    <li><b>Responses: </b><a href="{{ action('StatsController@getResponses', [$campaign->getIdString()]) }}">View {{ $campaign->total_responses }} Campaign Responses</a></li>
+    <li><b>Responses: </b><a href="{{ action('StatsController@getResponses', [$campaign->getIdString()]) }}">View {{ $campaign->total_responses }} Responses</a></li>
 </ul>
 <h3>Actual Text Sent</h3>
 <div class="well well-lg">
@@ -52,6 +52,8 @@
         var loader = document.getElementById('loader');
         loader.className = 'hidden';
         var data = google.visualization.arrayToDataTable(getData()); 
+        var formatter = new google.visualization.NumberFormat({suffix: '%'});
+        formatter.format(data, 1);
         var view = new google.visualization.DataView(data);
         view.setColumns([0, 1,
             {
@@ -64,7 +66,7 @@
                     
         var options = {title: 'Campaign Response Statistics',
         legend: {position: 'none'}};
-        var chart = new google.visualization.BarChart(document.getElementById('chart'));
+        var chart = new google.visualization.ColumnChart(document.getElementById('chart'));
         chart.draw(view, options);
 
     }
@@ -73,7 +75,7 @@
         return [
             ['Response', 'count', {role: 'style'}]
             @for($i = 0; $i < count($stats); $i++)
-            ,["{{ $stats[$i]->val}}", {{ $stats[$i]->count }}, "{{$colors[$i]}}"]
+            ,["{{ $stats[$i]->val}}", {{ $stats[$i]->percent }}, "{{$colors[$i]}}"]
             @endfor            
     ];
     }

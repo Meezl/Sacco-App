@@ -45,15 +45,14 @@ My Campaigns
             </td>
             <td>
                 @if( $campaigns[$i]->is_active)
-                <a href="{{ action('StatsController@getCampaign', [$campaigns[$i]->id_string]) }}" class="btn btn-primary btn-xs">View Stats</a>
+                <a href="{{ action('StatsController@getCampaign', [$campaigns[$i]->id_string]) }}" class="btn btn-theme btn-xs">View Stats</a>
                     @if($campaigns[$i]->is_closed)
-                    <a href="{{ action('StatsController@getOpen', [$campaigns[$i]->id_string]) }}" class="btn btn-success tooltips btn-xs" title="Campaign Will now be able to receive new responses">Reopen</a>
+                    <a href="{{ action('StatsController@getOpen', [$campaigns[$i]->id_string]) }}" class="btn btn-primary tooltips btn-xs" title="Campaign Will now be able to receive new responses">Reopen</a>
                     @else 
                     <a href="{{ action('StatsController@getClose', [$campaigns[$i]->id_string]) }}" class="btn btn-warning btn-xs tooltips" title="New User responses will be ignored">Close</a>
-                    @endif
-                @else
-                <a href="{{ action('CampaignController@getNew', [$campaigns[$i]->id]) }}" class="btn btn-primary btn-xs">Edit</a>
-                @endif                
+                    @endif                
+                @endif
+                <a href="{{ action('CampaignController@getNew', [$campaigns[$i]->id]) }}" class="btn btn-success btn-xs">Edit</a>
                 <a href="{{ action('CampaignController@getDelete', [$campaigns[$i]->id]) }}" class="btn btn-danger btn-xs delete">Delete</a>                
             </td>
         </tr>
