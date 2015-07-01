@@ -15,10 +15,7 @@
     <li><b>Estimated Cost Incurred:</b> {{ $campaign->cost }}</li>
     <li><b>Responses: </b><a href="{{ action('StatsController@getResponses', [$campaign->getIdString()]) }}">View {{ $campaign->total_responses }} Responses</a></li>
 </ul>
-<h3>Actual Text Sent</h3>
-<div class="well well-lg">
-    {!! nl2br(htmlentities($campaign->getSms())) !!}
-</div>
+
 @if($campaign->possible_responses)
 <br>
 <p id="loader"  class="text-center">
@@ -28,6 +25,13 @@
 <div id="chart" style="height: 500px"></div>
 <br />
 @endif
+
+<h3>Actual Text Sent</h3>
+<div class="well well-lg">
+    {!! nl2br(htmlentities($campaign->getSms())) !!}
+</div>
+
+
 <h3>Description:</h3>
 <p>
     {{ $campaign->description }}
