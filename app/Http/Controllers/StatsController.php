@@ -141,12 +141,13 @@ class StatsController extends Controller {
 
         //match
         $responses = $campaign->response()
-                ->select(\DB::raw('count(*) as count, text'))
+                ->select(\DB::raw('count(*) as count, UCASE(text) as text'))
                 ->groupBy('text')
                 ->get();
+        
         //\Debugbar::info(compact('options'));return;
         foreach ($responses as $r) {
-            $found = false;
+            $found = false;         
             foreach ($options as &$o) {
                 if ($r->text == $o['key']) {
                     $o['count'] += $r->count;
@@ -157,7 +158,7 @@ class StatsController extends Controller {
             unset($o);
 
             if (!$found) {
-                $options[count($options) - 1]['count'] ++;
+                $options[count($options) - 1]['count'] += $r->count;
             }
         }
         return $options;
