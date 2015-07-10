@@ -49,7 +49,7 @@ class MessageHelper {
         $resp = new Response();
         $resp->campaign_id = $campaign->id;
         //correct response. one character only
-        if ($campaign->possible_responses && count($parts) == 2 && strlen($parts[1]) == 1) {
+        if ($campaign->possible_responses && count($parts) >= 2 && strlen($parts[1]) == 1) {
             $resp->text = strtoupper($parts[1]);
         } else {
             $resp->text = implode(' ', array_slice($parts, 1));
