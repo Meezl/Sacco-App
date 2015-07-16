@@ -41,6 +41,11 @@ New Contact
         <p class="help-block small">Phone Number should be a valid Kenyan numbers in the format. 0702123456</p>
         {!! $errors->first('phone_number', '<p class="text-danger small">:message</p>') !!}
     </div>
+    <div class="form-group">
+        <label>Account No</label>
+        <input value="{{ $contact->account_no }}" type="text" name="account_no"class="form-control" />
+        {!! $errors->first('account_no', '<p class="text-danger small">:message</p>') !!}
+    </div>
     <a href="{{ action('ContactController@getIndex')}}" class="btn btn-default">Cancel</a>
     <button class="btn btn-success pull-right" type="submit">Submit</button>
     <div class="clearfix"></div>

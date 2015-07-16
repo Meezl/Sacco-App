@@ -107,6 +107,10 @@ class ContactController extends Controller {
         if (array_key_exists('phone_number', $data)) {
             $contact->phone = $data['phone_number'];
         }
+        
+        if (array_key_exists('account_no', $data)) {
+            $contact->account_no = $data['account_no'];
+        }
     }
 
     /**

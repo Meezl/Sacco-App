@@ -49,8 +49,29 @@ Route::group(['middleware' => 'auth'], function() {
 Route::controller('auth', 'Auth\AuthController');
 
 Route::get('test', function() {
-   $meeting = \App\Models\Meeting::first();
-   return \App\Models\Meeting::dbDate($meeting->start);
+    
+    function getNames($fullName) {
+        $parts = explode(' ', $fullName);
+        return array(
+            $parts[0].' '.$parts[1],
+            $parts[2]
+        );
+    }
+   $contacts = fgetcsv(fopen(public_path().'/contacts.csv', 'r'));
+   print_r($contacts); return 'hello';
+   $inserts = [];
+   for ($i = 0; $i < count($contacts); $i++) {       
+       $current = $contacts[$i] ;
+       $name = getNames($contacts[1]);
+       $inserts[] = array(
+           'account_no' => $current[0],
+           'first_name' => $name[0],
+           'last_name' => $name[1],
+           'phone' => $current[2]
+       );
+   }
+   print_r($inserts);
+   return 'done';
     
 });
 
