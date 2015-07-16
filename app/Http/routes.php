@@ -17,7 +17,7 @@ Validator::extend('kmobile', 'App\Validators\PhoneValidator@validate');
 
 
 Route::get('callback', function() {
-   return view('callback');
+    return view('callback');
 });
 
 Route::post('callback', 'MessageController@postHandleCallback');
@@ -27,7 +27,7 @@ Route::post('callback', 'MessageController@postHandleCallback');
 Route::group(['middleware' => 'auth'], function() {
 
     Route::get('/', 'DashBoardController@getIndex');
-    
+
     Route::post('/new-meeting', 'DashBoardController@postNewMeeting');
 
     Route::controller('user', 'UserController');
@@ -48,32 +48,6 @@ Route::group(['middleware' => 'auth'], function() {
 
 Route::controller('auth', 'Auth\AuthController');
 
-Route::get('test', function() {
-    
-    function getNames($fullName) {
-        $parts = explode(' ', $fullName);
-        return array(
-            $parts[0].' '.$parts[1],
-            $parts[2]
-        );
-    }
-   $contacts = fgetcsv(fopen(public_path().'/contacts.csv', 'r'));
-   print_r($contacts); return 'hello';
-   $inserts = [];
-   for ($i = 0; $i < count($contacts); $i++) {       
-       $current = $contacts[$i] ;
-       $name = getNames($contacts[1]);
-       $inserts[] = array(
-           'account_no' => $current[0],
-           'first_name' => $name[0],
-           'last_name' => $name[1],
-           'phone' => $current[2]
-       );
-   }
-   print_r($inserts);
-   return 'done';
-    
-});
 
 Route::get('another', function() {
 
@@ -172,16 +146,16 @@ EOD;
 
 // Print text using writeHTMLCell()
     $pdf->SetFillColor(245, 245, 245);
-    $pdf->SetDrawColor(227,227,227);
+    $pdf->SetDrawColor(227, 227, 227);
     $pdf->writeHTMLCell(0, 0, '', '', $html, 1, 1, 1, true, '', true);
-    
+
 
     // column titles
     $header = array('Country', 'Capital', 'Area (sq km)', 'Pop. (thousands)');
 
     // data loading
     $data = $pdf->LoadData(public_path('data/table_data_demo.txt'));
-    
+
     $pdf->ColoredTable($header, $data);
 // ---------------------------------------------------------
 // Close and output PDF document
