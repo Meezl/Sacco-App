@@ -68,7 +68,7 @@ class StatsController extends Controller
         $pdf->overview();
         $pdf->AddPage();
         $pdf->renderMessages();
-        $name = $campaign->getIdString().date('Y_d_m_H_i_s').'.pdf';
+        $name = $campaign->getIdString().date('_Y_d_m_H_i_s').'.pdf';
         $pdf->Output($name, 'I');
     }
 
