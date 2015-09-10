@@ -1,5 +1,5 @@
 /*---LEFT BAR ACCORDION----*/
-$(function () {
+$(function() {
     $('#nav-accordion').dcAccordion({
         eventType: 'click',
         autoClose: true,
@@ -13,12 +13,12 @@ $(function () {
     });
 });
 
-var Script = function () {
+var Script = function() {
 
 
 //    sidebar dropdown menu auto scrolling
 
-    jQuery('#sidebar .sub-menu > a').click(function () {
+    jQuery('#sidebar .sub-menu > a').click(function() {
         var o = ($(this).offset());
         diff = 250 - o.top;
         if (diff > 0)
@@ -31,7 +31,7 @@ var Script = function () {
 
 //    sidebar toggle
 
-    $(function () {
+    $(function() {
         function responsiveView() {
             var wSize = $(window).width();
             if (wSize <= 768) {
@@ -48,27 +48,37 @@ var Script = function () {
         $(window).on('resize', responsiveView);
     });
 
-    $('.fa-bars').click(function () {
-        if ($('#sidebar > ul').is(":visible") === true) {
-            $('#main-content').css({
-                'margin-left': '0px'
-            });
-            $('#sidebar').css({
-                'margin-left': '-210px'
-            });
-            $('#sidebar > ul').hide();
-            $("#container").addClass("sidebar-closed");
+    window.hideMenu = function() {
+        $('#main-content').css({
+            'margin-left': '0px'
+        });
+        $('#sidebar').css({
+            'margin-left': '-210px'
+        });
+        $('#sidebar > ul').hide();
+        $("#container").addClass("sidebar-closed");
+    };
+
+    window.showMenu = function() {
+        $('#main-content').css({
+            'margin-left': '210px'
+        });
+        $('#sidebar > ul').show();
+        $('#sidebar').css({
+            'margin-left': '0'
+        });
+        $("#container").removeClass("sidebar-closed");
+    };
+
+    $('.fa-bars').click(function() {
+        if ($('#container').hasClass("sidebar-closed") === true) {
+            showMenu();
         } else {
-            $('#main-content').css({
-                'margin-left': '210px'
-            });
-            $('#sidebar > ul').show();
-            $('#sidebar').css({
-                'margin-left': '0'
-            });
-            $("#container").removeClass("sidebar-closed");
+            hideMenu();
         }
     });
+
+
 
 // custom scrollbar
     $("#sidebar").niceScroll({styler: "fb", cursorcolor: "#4ECDC4", cursorwidth: '10', cursorborderradius: '10px', background: '#404040', spacebarenabled: false, cursorborder: ''});
@@ -77,7 +87,7 @@ var Script = function () {
 
 // widget tools
 
-    jQuery('.panel .tools .fa-chevron-down').click(function () {
+    jQuery('.panel .tools .fa-chevron-down').click(function() {
         var el = jQuery(this).parents(".panel").children(".panel-body");
         if (jQuery(this).hasClass("fa-chevron-down")) {
             jQuery(this).removeClass("fa-chevron-down").addClass("fa-chevron-up");
@@ -88,7 +98,7 @@ var Script = function () {
         }
     });
 
-    jQuery('.panel .tools .fa-times').click(function () {
+    jQuery('.panel .tools .fa-times').click(function() {
         jQuery(this).parents(".panel").parent().remove();
     });
 
@@ -106,7 +116,7 @@ var Script = function () {
 // custom bar chart
 
     if ($(".custom-bar-chart")) {
-        $(".bar").each(function () {
+        $(".bar").each(function() {
             var i = $(this).find(".value").html();
             $(this).find(".value").html("");
             $(this).find(".value").animate({
@@ -117,7 +127,7 @@ var Script = function () {
 
     //delete buttons confirm
     $delete = $('.delete');
-    $delete.click(function () {
+    $delete.click(function() {
         return window.confirm('Are Sure you want to delete it?');
     });
 
@@ -128,7 +138,7 @@ var Script = function () {
                 .prop('checked', true);
         return false;
     });
-    
+
     $('#deselect-all').click(function() {
         $(this).closest('form')
                 .find('input[type=checkbox]')

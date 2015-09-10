@@ -9,6 +9,8 @@
 @stop
 
 @section('inner-content')
+<a class="pull-right btn btn-default btn-xs" href="{{action('StatsController@getReport', [$campaign->getIdString()])}}" target="_blank">Print</a>
+<div class="clearfix"></div>
 <ul>
     <li><b>Code: </b>{{ $campaign->getIdString() }}</li>
     <li><b>Members Contacted:</b>{{ $campaign->total_contacted }} </li>
@@ -24,6 +26,38 @@
 
 <div id="chart" style="height: 500px"></div>
 <br />
+<div class="container">
+    <h3>Tabular Data</h3>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover table-striped">
+            <thead>
+                <tr>
+                    <td>#</td>
+                    <td>Option</td>
+                    <td>Text</td>
+                    <td>Count</td>
+                    <td>%</td>
+                </tr>
+            </thead>
+            <tbody>
+                @for($i = 0; $i < count($stats); $i++)
+                <tr>
+                    <td>{{$i+1}}</td>
+                    <td>{{$stats[$i]->key}}</td>
+                    <td>{{$stats[$i]->val}}</td>
+                    <td>{{$stats[$i]->count}}</td>
+                    <td>{{number_format($stats[$i]->percent, 2)}}%</td>
+                </tr>
+                @endfor
+                <tr>
+                    <td></td>
+                    <td colspan="2"><b>Total Responses</b></td>
+                    <td colspan="2">{{ $campaign->total_responses }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 @endif
 
 <h3>Actual Text Sent</h3>
@@ -44,6 +78,9 @@
 @section('extra-scripts')
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script>
+    //more space for the charts
+    hideMenu();
+    
 (function() {
     google.load("visualization", "1", {packages:["corechart"]});
     google.setOnLoadCallback(drawChart);

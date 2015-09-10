@@ -5,26 +5,26 @@ namespace App\Http\Controllers;
 use App\Models\Campaign;
 use App\Models\Response;
 use App\Models\Contact;
+use App\Commands\GenerateStats;
 
 /**
  * Campaign Report Generator
  *
  * @author jameskmb
  */
-class StatsController extends Controller {
+class StatsController extends Controller
+{
 
-    const SPOILT_VOTES = 'Invalid Responses';
-    
-    
-    
-    public function getOpen($id) {
+    public function getOpen($id)
+    {
         $campaign = $this->retrieve($id);
         $campaign->is_closed = 0;
         $campaign->save();
         return \Redirect::action('CampaignController@getIndex');
     }
-    
-    public function getClose($id) {
+
+    public function getClose($id)
+    {
         $campaign = $this->retrieve($id);
         $campaign->is_closed = 1;
         $campaign->save();
@@ -35,50 +35,41 @@ class StatsController extends Controller {
      * Get the statistics of a campaign
      * @param mixed $id int id of the campaign or idString e.g {X0004}
      */
-    public function getCampaign($id) {
+    public function getCampaign($id)
+    {
         $campaign = $this->retrieve($id);
         $campaign->cost = $this->estimatedCost($campaign->sent()->lists('cost'));
-        
-        $stats = $this->formatedStats($campaign);
-        
+
+        $generator = new GenerateStats($campaign);
+        $stats = $generator->handle();
+
         //recount to include invalid/mising responses
         $campaign->total_responses = 0;
-        foreach($stats as $s) {
+        foreach ($stats as $s) {
             $campaign->total_responses += $s->count;
         }
-        
+
         $colors = config('sms.colors');
-        
+
         return view('reports.campaign-index', compact('campaign', 'stats', 'colors'));
     }
-    
-    private function formatedStats(Campaign $campaign) {
-        $temp = $this->generateStats($campaign);
-        $total = 0;
-        foreach($temp as $val) {
-            $total += $val['count'];
-        }
-        
-        if($total < $campaign->total_contacted) {
-            $temp[] = array(
-                'key' => 'pending',
-                'val' => 'Pending Responses',
-                'count' => $campaign->total_contacted - $total
-            );
-        }
-        
-        $stats = [];
-        foreach ($temp as $s) {
-            if ($total == 0) {
-                $s['percent'] = 0;               
-            }
-            else {
-                $s['percent'] = ($s['count']/$total)* 100; //convert to %  
-            }            
-            $stats[] = (object) $s;
-        }
-        
-        return $stats;
+
+    public function getReport($id)
+    {
+        $campaign = $this->retrieve($id);
+        $statsGenerator = new \App\Commands\GenerateStats($campaign);
+
+        $pdf = new \App\Models\Report(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf->loadDefaults($campaign, $statsGenerator->handle());
+        $pdf->intro();
+        $pdf->Ln();
+        $pdf->renderQuestion();
+        $pdf->Ln();
+        $pdf->overview();
+        $pdf->AddPage();
+        $pdf->renderMessages();
+        $name = $campaign->getIdString().date('Y_d_m_H_i_s').'.pdf';
+        $pdf->Output($name, 'I');
     }
 
     /**
@@ -86,13 +77,15 @@ class StatsController extends Controller {
      * @param mixed $id int id of the campaign or idString e.g {X0004}
      * @return Response
      */
-    public function getResponses($id) {
+    public function getResponses($id)
+    {
         $campaign = $this->retrieve($id);
         $resps = $campaign->getResponse();
         return view('reports.responses', compact('campaign', 'resps'));
     }
 
-    public function getResponseDetails($campaign_id, $resp_id) {
+    public function getResponseDetails($campaign_id, $resp_id)
+    {
         $campaign = $this->retrieve($campaign_id);
         $response = $campaign->response()
                 ->where('id', '=', $resp_id)
@@ -108,7 +101,8 @@ class StatsController extends Controller {
      * Try to calculate cost 
      * @param array $costs
      */
-    private function estimatedCost(array $costs) {
+    private function estimatedCost(array $costs)
+    {
         \Debugbar::info(compact('costs'));
         $total = 0;
         foreach ($costs as $c) {
@@ -122,67 +116,13 @@ class StatsController extends Controller {
         return $total;
     }
 
-    private function generateStats(Campaign $campaign) {
-        if (!$campaign->possible_responses) {
-            return [];
-        }
-
-        $options = $this->possibleResponses(trim($campaign->getResponseText()));
-        $options[] = array(
-            'key' => 'spoilt',
-            'val' => self::SPOILT_VOTES
-        );
-
-        //init vote count
-        foreach ($options as &$o) {
-            $o['count'] = 0;
-        }
-        unset($o);
-
-        //match
-        $responses = $campaign->response()
-                ->select(\DB::raw('count(*) as count, UCASE(text) as text'))
-                ->groupBy('text')
-                ->get();
-        
-        //\Debugbar::info(compact('options'));return;
-        foreach ($responses as $r) {
-            $found = false;         
-            foreach ($options as &$o) {
-                if ($r->text == $o['key']) {
-                    $o['count'] += $r->count;
-                    $found = true;
-                    break;
-                }
-            }
-            unset($o);
-
-            if (!$found) {
-                $options[count($options) - 1]['count'] += $r->count;
-            }
-        }
-        return $options;
-    }
-
-    private function possibleResponses($answers) {
-        $options = explode("\n", $answers);
-        $result = [];
-        foreach ($options as $o) {
-            $temp = explode(':', $o);
-            $result[] = array(
-                'key' => $temp[0],
-                'val' => $temp[1]
-            );
-        }
-        return $result;
-    }
-
     /**
      * Retrieve active Campaign
      * @param mixed $id Campaign int id or stringId
      * @return Campaign
      */
-    public function retrieve($id) {
+    public function retrieve($id)
+    {
         $campaign = null;
         $query = Campaign::where('is_active', '=', 1);
         if (is_numeric($id)) {
